@@ -3139,7 +3139,7 @@ body.dark-mode .skill-illustration-container {
     padding: 24px;
   }
   
-  #modal-title {
+  #modal-title, #skill-modal-title {
     font-size: 1.8rem;
   }
   
@@ -3150,5 +3150,24 @@ body.dark-mode .skill-illustration-container {
   .modal-footer-links a {
     width: 100%;
     justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .project-modal {
+    padding: 10px;
+  }
+  
+  .modal-body-content {
+    padding: 20px 16px;
+  }
+  
+  #modal-title, #skill-modal-title {
+    font-size: 1.4rem;
+  }
+  
+  .modal-header-visual,
+  .skill-illustration-container {
+    height: 130px;
   }
 }
