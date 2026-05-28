@@ -1489,6 +1489,59 @@
       </div>
     </div>
 
+    <!-- AI Copilot Floating Widget -->
+    <div class="ai-copilot-wrapper" id="ai-copilot-wrapper">
+      <!-- Floating Toggle Button -->
+      <button class="ai-copilot-trigger glass-card" id="ai-copilot-trigger" aria-label="Discuter avec l'IA">
+        <span class="pulse-ring"></span>
+        <i data-lucide="bot" class="trigger-icon"></i>
+      </button>
+
+      <!-- Chat Panel -->
+      <div class="ai-chat-panel glass-card" id="ai-chat-panel">
+        <!-- Chat Header -->
+        <div class="ai-chat-header">
+          <div class="bot-info">
+            <div class="bot-avatar-wrapper">
+              <i data-lucide="bot" class="bot-avatar-icon"></i>
+              <span class="bot-status-dot"></span>
+            </div>
+            <div class="bot-text-info">
+              <h3>CL_COPILOT // IA</h3>
+              <span>Assistant en ligne</span>
+            </div>
+          </div>
+          <button class="ai-chat-close" id="ai-chat-close" aria-label="Fermer le chat">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+
+        <!-- Chat Log -->
+        <div class="ai-chat-body" id="ai-chat-body">
+          <div class="chat-message bot animate-bubble">
+            <div class="message-bubble">
+              Bonjour ! Je suis <strong>CL_COPILOT</strong>, l'assistant virtuel de Christian. Posez-moi vos questions sur son parcours, ses projets ou ses compétences !
+            </div>
+          </div>
+        </div>
+
+        <!-- Suggestion Chips -->
+        <div class="ai-chat-suggestions" id="ai-chat-suggestions">
+          <button class="suggestion-chip" data-question="Quelles sont ses compétences ?">Compétences</button>
+          <button class="suggestion-chip" data-question="Présente-moi ses projets.">Projets</button>
+          <button class="suggestion-chip" data-question="Comment le contacter ?">Contact</button>
+        </div>
+
+        <!-- Chat Input Form -->
+        <form class="ai-chat-input-area" id="ai-chat-form">
+          <input type="text" id="ai-chat-input" placeholder="Posez une question..." autocomplete="off" required />
+          <button type="submit" class="ai-chat-send-btn" aria-label="Envoyer">
+            <i data-lucide="send"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+
     <!-- Floating Back to Top Button -->
     <button id="scroll-top" class="scroll-top-btn" aria-label="Retour en haut">
       <i data-lucide="arrow-up"></i>

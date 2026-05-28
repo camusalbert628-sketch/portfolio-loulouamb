@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initSkillModals();
   initTestimonialsCarousel();
   initContactForm();
+  initAICopilot();
 });
 
 /* ==========================================================================
@@ -1093,4 +1094,307 @@ function initContactForm() {
     e.stopPropagation();
     successOverlay.classList.remove('active');
   });
+}
+
+/* ==========================================================================
+   AI AGENT PORTFOLIO COPILOT (CL_COPILOT)
+   ========================================================================== */
+function initAICopilot() {
+  const wrapper = document.getElementById('ai-copilot-wrapper');
+  const trigger = document.getElementById('ai-copilot-trigger');
+  const panel = document.getElementById('ai-chat-panel');
+  const closeBtn = document.getElementById('ai-chat-close');
+  const form = document.getElementById('ai-chat-form');
+  const input = document.getElementById('ai-chat-input');
+  const chatBody = document.getElementById('ai-chat-body');
+  const suggestions = document.getElementById('ai-chat-suggestions');
+
+  if (!wrapper || !trigger || !panel || !closeBtn || !form || !input || !chatBody) return;
+
+  // Toggle Chat Panel
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isActive = panel.classList.toggle('active');
+    trigger.classList.toggle('active');
+    if (isActive) {
+      setTimeout(() => input.focus(), 300);
+      scrollToBottom();
+    }
+  });
+
+  closeBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    panel.classList.remove('active');
+    trigger.classList.remove('active');
+  });
+
+  // Close when clicking outside the chat panel
+  document.addEventListener('click', (e) => {
+    if (panel.classList.contains('active') && !wrapper.contains(e.target)) {
+      panel.classList.remove('active');
+      trigger.classList.remove('active');
+    }
+  });
+
+  // Handle Suggestion Chips click
+  suggestions.addEventListener('click', (e) => {
+    const chip = e.target.closest('.suggestion-chip');
+    if (!chip) return;
+    const question = chip.getAttribute('data-question');
+    handleUserMessage(question);
+  });
+
+  // Form Submit
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const message = input.value.trim();
+    if (!message) return;
+    input.value = '';
+    handleUserMessage(message);
+  });
+
+  function scrollToBottom() {
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+
+  function appendMessage(text, sender) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `chat-message ${sender} animate-bubble`;
+    
+    const bubble = document.createElement('div');
+    bubble.className = 'message-bubble';
+    bubble.innerHTML = text;
+    
+    messageDiv.appendChild(bubble);
+    chatBody.appendChild(messageDiv);
+    
+    // Refresh Lucide icons in case the HTML has icon elements
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+    
+    scrollToBottom();
+  }
+
+  function showTypingIndicator() {
+    const indicatorDiv = document.createElement('div');
+    indicatorDiv.className = 'chat-message bot typing-msg animate-bubble';
+    indicatorDiv.id = 'typing-indicator-msg';
+    
+    const bubble = document.createElement('div');
+    bubble.className = 'message-bubble typing-indicator';
+    bubble.innerHTML = `
+      <span class="typing-dot"></span>
+      <span class="typing-dot"></span>
+      <span class="typing-dot"></span>
+    `;
+    
+    indicatorDiv.appendChild(bubble);
+    chatBody.appendChild(indicatorDiv);
+    scrollToBottom();
+  }
+
+  function removeTypingIndicator() {
+    const indicator = document.getElementById('typing-indicator-msg');
+    if (indicator) {
+      indicator.remove();
+    }
+  }
+
+  function handleUserMessage(message) {
+    // Append user bubble
+    appendMessage(message, 'user');
+    
+    // Show typing
+    showTypingIndicator();
+
+    // Select suitable response
+    const { reply, callback } = getAgentResponse(message);
+
+    // Simulate thinking delay (random 700ms - 1300ms)
+    const delay = 700 + Math.random() * 600;
+    setTimeout(() => {
+      removeTypingIndicator();
+      appendMessage(reply, 'bot');
+      
+      // Execute any UI action associated with this intent
+      if (callback) {
+        setTimeout(callback, 300);
+      }
+    }, delay);
+  }
+
+  // NLP matching logic
+  function getAgentResponse(query) {
+    const text = query.toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // strip accents
+    
+    // 1. Projects triggers
+    if (text.includes('saas') || (text.includes('projet') && (text.includes('gestion') || text.includes('entreprise')))) {
+      return {
+        reply: "Le **SaaS de Gestion d'Entreprise** est une application conçue avec NestJS et PostgreSQL pour synchroniser les équipes et planifier les projets.<br><br>J'ouvre sa présentation technique détaillée pour vous ! 💼",
+        callback: () => triggerProjectModal('saas-gestion')
+      };
+    }
+    if (text.includes('learning') || text.includes('cours') || text.includes('enseign') || (text.includes('projet') && text.includes('etudiant'))) {
+      return {
+        reply: "La **Plateforme E-Learning** est un projet d'apprentissage en ligne complet développé avec NextJS, Prisma et PostgreSQL, configuré sur Vercel.<br><br>J'ouvre sa documentation technique complète ! 📚",
+        callback: () => triggerProjectModal('e-learning')
+      };
+    }
+    if (text.includes('domotique') || text.includes('iot') || text.includes('maison') || text.includes('connect')) {
+      // If they ask for general IoT skills vs project
+      if (text.includes('competence') || text.includes('savoir')) {
+        return {
+          reply: "Christian est très compétent en **IoT & Domotique** (ESP32, Raspberry Pi, protocoles MQTT, CoAP, programmation C++).<br><br>J'ouvre sa fiche de compétence IoT sur votre écran ! 🔌",
+          callback: () => triggerSkillModal('iot')
+        };
+      }
+      return {
+        reply: "Le **Système IoT Domotique** intègre des puces ESP32 et transmet en temps réel via MQTT vers une base InfluxDB supervisée par Node-RED.<br><br>J'ouvre la fiche technique de cette réalisation ! 🏠",
+        callback: () => triggerProjectModal('iot-domotique')
+      };
+    }
+    if (text.includes('intrusion') || text.includes('scapy') || text.includes('cybersecurite') || text.includes('securite')) {
+      if (text.includes('competence') || text.includes('savoir')) {
+        return {
+          reply: "En **Cybersécurité**, Christian réalise des audits, sécurise les réseaux industriels, utilise Kali Linux, Wireshark, et configure des IDS.<br><br>J'ouvre sa fiche de compétence sécurité ! 🛡️",
+          callback: () => triggerSkillModal('cyber')
+        };
+      }
+      return {
+        reply: "Le **Système de Détection d'Intrusion Réseau** est écrit en Python avec Scapy, indexé dans Elasticsearch et Kibana pour détecter les scans de ports.<br><br>J'ouvre sa fiche technique détaillée ! 🛡️",
+        callback: () => triggerProjectModal('detect-intrusion')
+      };
+    }
+    if (text.includes('portfolio') || text.includes('vitrine') || text.includes('site')) {
+      return {
+        reply: "Ce **Portfolio Interactif** est bâti en HTML/CSS Glassmorphism et Javascript pour offrir un rendu fluide à 60fps et optimisé pour le SEO.<br><br>J'ouvre sa fiche descriptive ! 💻",
+        callback: () => triggerProjectModal('portfolio')
+      };
+    }
+
+    // 2. Skill specific triggers
+    if (text.includes('ia') || text.includes('intelligence artificielle') || text.includes('machine learning') || text.includes('tensorflow') || text.includes('python')) {
+      return {
+        reply: "Christian possède une expertise en **IA & Machine Learning** (TensorFlow, OpenCV, Python, Prompt Engineering pour LLMs).<br><br>J'ouvre sa fiche de compétence IA pour vous ! 🧠",
+        callback: () => triggerSkillModal('ia')
+      };
+    }
+    if (text.includes('automate') || text.includes('zelio') || text.includes(' ladder') || text.includes('grafcet')) {
+      return {
+        reply: "Christian maîtrise la programmation d'**Automates Programmables Industriels (API)** (Zelio, Schneider, SoMachine, Ladder, SFC).<br><br>J'ouvre sa fiche de compétence en Automatique Industrielle ! ⚙️",
+        callback: () => triggerSkillModal('api')
+      };
+    }
+    if (text.includes('electricite') || text.includes('cablage') || text.includes('armoire') || text.includes('tension')) {
+      return {
+        reply: "Christian est qualifié en **Électricité Industrielle** (câblage d'armoires BT/HT, lecture de schémas électriques, disjoncteurs, sécurité).<br><br>J'ouvre sa fiche de compétence en électricité ! ⚡",
+        callback: () => triggerSkillModal('electricite')
+      };
+    }
+    if (text.includes('electronique') || text.includes('pcb') || text.includes('soudure') || text.includes('oscilloscope')) {
+      return {
+        reply: "Christian conçoit et répare des **Circuits Électroniques** (analogiques/numériques, routage de PCB sous Altium/EasyEDA, soudures CMS).<br><br>J'ouvre sa fiche de compétence en électronique ! 📻",
+        callback: () => triggerSkillModal('electronique')
+      };
+    }
+    if (text.includes('workflow') || text.includes('automatisation') || text.includes('n8n') || text.includes('make') || text.includes('zapier')) {
+      return {
+        reply: "Christian automatise les flux d'affaires avec des outils d'intégration de workflows Cloud comme **n8n, Make et Zapier**.<br><br>J'ouvre sa fiche de compétence en automatisation ! 🔄",
+        callback: () => triggerSkillModal('workflows')
+      };
+    }
+    if (text.includes('dev') || text.includes('full') || text.includes('stack') || text.includes('web') || text.includes('code') || text.includes('program') || text.includes('react') || text.includes('next')) {
+      return {
+        reply: "Christian développe des applications web dynamiques avec le stack **React, Next.js, Node.js, Express, TypeScript et PostgreSQL**.<br><br>J'ouvre sa fiche de développement web ! 💻",
+        callback: () => triggerSkillModal('fullstack')
+      };
+    }
+
+    // 3. General category triggers
+    if (text.includes('competence') || text.includes('savoir') || text.includes('techno') || text.includes('outil') || text.includes('peux tu faire') || text.includes('faire')) {
+      return {
+        reply: "Christian Loulouamb est qualifié en :<br>- **IoT & Embarqué** (ESP32, C++, MQTT)<br>- **Intelligence Artificielle** (Python, Machine Learning)<br>- **Développement Web Full-Stack** (NextJS, React, Node.js)<br>- **Électricité & Automates** (Zelio, Câblage, Ladder)<br>- **Cybersécurité & Réseaux** (IDS, Wireshark, Cisco).<br><br>Cliquez sur l'une des cartes de la section **Compétences** pour afficher ses détails ou posez-moi une question sur un de ces sujets ! 💡",
+        callback: () => scrollToSection('competences')
+      };
+    }
+    if (text.includes('projet') || text.includes('realisation') || text.includes('creation') || text.includes('oeuvre')) {
+      return {
+        reply: "Christian a réalisé des projets concrets tels qu'un **SaaS de gestion d'entreprise**, une **plateforme e-learning NextJS**, un **système domotique ESP32**, et un **IDS de détection réseau**.<br><br>Dites-moi : *'Montre-moi le projet saas'* ou *'Parle-moi du projet domotique'* pour ouvrir sa fiche technique ! 📂",
+        callback: () => scrollToSection('projets')
+      };
+    }
+    if (text.includes('parcours') || text.includes('experience') || text.includes('etude') || text.includes('formation') || text.includes('ecole') || text.includes('diplome') || text.includes('bts')) {
+      return {
+        reply: "Christian a suivi une classe préparatoire MPSI à l'ESIAC, a obtenu un BTS en électricité/automatismes, a enseigné les mathématiques, et détient des certifications Cisco/Coursera.<br><br>Je vous invite à consulter sa **Timeline interactive** dans la section 'Parcours' ! 🎓",
+        callback: () => scrollToSection('experience')
+      };
+    }
+    if (text.includes('contact') || text.includes('ecrire') || text.includes('message') || text.includes('mail') || text.includes('telephone') || text.includes('linkedin') || text.includes('facebook')) {
+      return {
+        reply: "Vous pouvez contacter Christian par :<br>- **Email** : [loulouambchristian628@gmail.com](mailto:loulouambchristian628@gmail.com)<br>- **Téléphone** : +237 6 56 31 16 02<br>- **Réseaux** : LinkedIn et Facebook.<br><br>J'ai fait défiler la page pour vous présenter le **Formulaire de contact** direct ! ✉️",
+        callback: () => scrollToSection('contact')
+      };
+    }
+
+    // 4. Conversational triggers
+    if (text.includes('bonjour') || text.includes('salut') || text.includes('hello') || text.includes('hi') || text.includes('bonsoir') || text.includes('hey')) {
+      return {
+        reply: "Bonjour ! Ravi de vous accueillir. Je suis **CL_COPILOT**, l'assistant IA de Christian. Comment puis-je vous renseigner aujourd'hui ? 😊"
+      };
+    }
+    if (text.includes('qui es tu') || text.includes('qui es-tu') || text.includes('ton nom') || text.includes("qu'es tu") || text.includes("c'est quoi") || text.includes('copilot') || text.includes('robot') || text.includes('bot')) {
+      return {
+        reply: "Je suis **CL_COPILOT**, un agent conversationnel configuré pour vous présenter le profil technique, les compétences et les projets de Christian Loulouamb. Je peux également vous aider à le contacter !"
+      };
+    }
+    if (text.includes('merci') || text.includes('super') || text.includes('cool') || text.includes('parfait')) {
+      return {
+        reply: "Je vous en prie ! C'est un plaisir de vous renseigner. Avez-vous d'autres questions sur Christian ? 🚀"
+      };
+    }
+
+    // 5. Fallback Response
+    return {
+      reply: "Je comprends votre intérêt ! Christian possède de nombreuses compétences en **IoT, IA, Cybersécurité, Électricité et Développement Web**.<br><br>N'hésitez pas à cliquer sur les puces ci-dessus ou à me demander par exemple : *'Parle-moi du projet domotique'* ou *'Quelles sont ses compétences ?'*"
+    };
+  }
+
+  // UI Helper actions
+  function triggerProjectModal(projectId) {
+    const card = document.querySelector(`.project-card[data-project-id="${projectId}"]`);
+    if (card) {
+      // Close active modals first
+      closeActiveModals();
+      setTimeout(() => card.click(), 100);
+    }
+  }
+
+  function triggerSkillModal(skillId) {
+    const card = document.querySelector(`.key-skill-card[data-skill-id="${skillId}"]`);
+    if (card) {
+      // Close active modals first
+      closeActiveModals();
+      setTimeout(() => card.click(), 100);
+    }
+  }
+
+  function closeActiveModals() {
+    const projectModal = document.getElementById('project-modal');
+    const skillModal = document.getElementById('skill-modal');
+    if (projectModal && projectModal.classList.contains('active')) {
+      document.getElementById('modal-close').click();
+    }
+    if (skillModal && skillModal.classList.contains('active')) {
+      document.getElementById('skill-modal-close').click();
+    }
+  }
+
+  function scrollToSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
 }
