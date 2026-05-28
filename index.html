@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Portfolio de Christian Loulouamb - Ingénieur Informatique Industrielle, Expert IoT, IA & Cybersécurité. Conception et sécurisation de solutions connectant le monde réel au digital." />
+    <meta name="keywords" content="Christian Loulouamb, portfolio, informatique industrielle, IoT, IA, cybersécurité, automate, Zelio, électricité, développement, full stack, n8n, Make, Vercel" />
+    <meta name="author" content="Christian Loulouamb" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Christian Loulouamb | Ingénieur Informatique Industrielle - IoT / IA & Cybersécurité</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+  </head>
+  <body>
+    <!-- Custom Cursor -->
+    <div id="custom-cursor" class="custom-cursor"></div>
+    <div id="custom-cursor-dot" class="custom-cursor-dot"></div>
+
+    <!-- Navigation Header -->
+    <header class="header">
+      <div class="nav-container">
+        <a href="#accueil" class="logo" id="nav-logo">
+          <span class="logo-accent">&lt;</span>CL<span class="logo-accent">_TECH /&gt;</span>
+        </a>
+        <nav class="nav-menu" id="nav-menu">
+          <a href="#accueil" class="nav-link active">Accueil</a>
+          <a href="#a-propos" class="nav-link">À Propos</a>
+          <a href="#competences" class="nav-link">Compétences</a>
+          <a href="#projets" class="nav-link">Projets</a>
+          <a href="#services" class="nav-link">Services</a>
+          <a href="#experience" class="nav-link">Parcours</a>
+          <button id="theme-toggle" class="theme-toggle-btn" aria-label="Changer de thème">
+            <i data-lucide="moon" class="theme-icon"></i>
+          </button>
+          <a href="#contact" class="nav-link btn-contact-nav">Contact</a>
+        </nav>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Ouvrir le menu">
+          <i data-lucide="menu"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <!-- Hero Section -->
+      <section id="accueil" class="hero-section">
+        <canvas id="particles-canvas" class="particles-canvas"></canvas>
+        <div class="section-container hero-container">
+          <div class="hero-content fade-in-el">
+            <div class="cyber-badge">
+              <span class="badge-dot"></span>
+              <span class="badge-text">DISPONIBILITÉ : IMMÉDIATE</span>
+            </div>
+            <h1 class="hero-title">
+              <span class="title-small">Christian Loulouamb</span>
+              <span class="title-large text-gradient">INFORMATIQUE INDUSTRIELLE</span>
+              <span class="title-large text-glow">IOT / IA & CYBER</span>
+            </h1>
+            <p class="hero-desc">
+              Ingénieur polyvalent. Je conçois des solutions innovantes connectant le monde réel au digital, automatise les processus complexes et optimise les performances des infrastructures.
+            </p>
+            <div class="hero-actions">
+              <a href="#projets" class="btn btn-primary">
+                <span>Projets Réalisés</span>
+                <i data-lucide="arrow-up-right"></i>
+              </a>
+              <a href="#contact" class="btn btn-secondary">
+                <span>Prendre Contact</span>
+              </a>
+            </div>
+          </div>
+          <div class="hero-visual fade-in-el">
+            <div class="avatar-glow-wrapper">
+              <div class="tech-ring ring-1"></div>
+              <div class="tech-ring ring-2"></div>
+              <div class="tech-ring ring-3"></div>
+              <div class="avatar-container">
+                <img src="/src/assets/avatar.jpg" alt="Christian Loulouamb" class="avatar-img" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="scroll-indicator">
+          <span>Explorez mon profil</span>
+          <div class="mouse-icon">
+            <span class="mouse-wheel"></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section À Propos -->
+      <section id="a-propos" class="about-section scroll-reveal">
+        <div class="section-container">
+          <div class="section-header">
+            <span class="section-subtitle">// 01. PROFIL</span>
+            <h2 class="section-title">À Propos de Moi</h2>
+          </div>
+          <div class="about-grid">
+            <div class="about-info">
+              <p class="lead-text">
+                Ingénieur polyvalent et passionné par les systèmes intelligents, l'IoT, l'Intelligence Artificielle, la Cybersécurité, l'automatisation industrielle et l'électronique.
+              </p>
+              <p class="body-text">
+                Je conçois, développe et sécurise des solutions innovantes qui connectent le monde réel au digital. Mon objectif : créer des systèmes performants, automatisés et sécurisés à fort impact pour les entreprises et la société.
+              </p>
+              
+              <!-- Tabbed Sub-sections for Hobbies, Qualities, Details -->
+              <div class="about-details-tabs">
+                <div class="details-tab-column">
+                  <h3><i data-lucide="award"></i> Qualités Personnelles</h3>
+                  <ul class="detail-list">
+                    <li><i data-lucide="check-circle" class="text-cyan"></i> Esprit analytique & logique</li>
+                    <li><i data-lucide="check-circle" class="text-cyan"></i> Autonome & proactif</li>
+                    <li><i data-lucide="check-circle" class="text-cyan"></i> Rigueur & sens du détail</li>
+                    <li><i data-lucide="check-circle" class="text-cyan"></i> Orientation résultats</li>
+                    <li><i data-lucide="check-circle" class="text-cyan"></i> Excellent relationnel</li>
+                    <li><i data-lucide="check-circle" class="text-cyan"></i> Sens de l'initiative</li>
+                  </ul>
+                </div>
+                <div class="details-tab-column">
+                  <h3><i data-lucide="languages"></i> Langues</h3>
+                  <ul class="detail-list">
+                    <li><i data-lucide="globe" class="text-purple"></i> <strong>Français :</strong> Natif</li>
+                    <li><i data-lucide="globe" class="text-purple"></i> <strong>Anglais :</strong> Intermédiaire (B2)</li>
+                  </ul>
+                  <h3 style="margin-top: 20px;"><i data-lucide="heart"></i> Loisirs</h3>
+                  <div class="hobbies-grid">
+                    <span class="hobby-badge"><i data-lucide="activity"></i> Football & Sport</span>
+                    <span class="hobby-badge"><i data-lucide="music"></i> Musique</span>
+                    <span class="hobby-badge"><i data-lucide="palette"></i> Dessin</span>
+                    <span class="hobby-badge"><i data-lucide="film"></i> Film</span>
+                    <span class="hobby-badge"><i data-lucide="search"></i> Recherche</span>
+                    <span class="hobby-badge"><i data-lucide="book-open"></i> Lecture</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="about-stats" id="stats-container">
+              <div class="stat-card">
+                <span class="stat-number" data-target="3">0</span><span class="stat-plus">+</span>
+                <span class="stat-label">Années d'Expérience</span>
+              </div>
+              <div class="stat-card">
+                <span class="stat-number" data-target="5">0</span><span class="stat-plus">+</span>
+                <span class="stat-label">Projets Déployés</span>
+              </div>
+              <div class="stat-card">
+                <span class="stat-number" data-target="10">0</span><span class="stat-plus">+</span>
+                <span class="stat-label">Outils IA Maîtrisés</span>
+              </div>
+              <div class="stat-card">
+                <span class="stat-number" data-target="100">0</span><span class="stat-plus">%</span>
+                <span class="stat-label">Engagé Innovation</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Compétences -->
+      <section id="competences" class="skills-section scroll-reveal">
+        <div class="section-container">
+          <div class="section-header">
+            <span class="section-subtitle">// 02. EXPERTISE</span>
+            <h2 class="section-title">Compétences & Technologies</h2>
+          </div>
+
+          <!-- Compétences Clés (Key Skills Dashboard) -->
+          <div class="key-skills-dashboard">
+            <h3 class="subsection-title">// Compétences Clés</h3>
+            <div class="key-skills-grid">
+              
+              <div class="key-skill-card glass-card clickable-card" data-skill-id="iot" style="--width: 95%;">
+                <div class="key-skill-icon"><i data-lucide="cpu" class="text-cyan"></i></div>
+                <div class="key-skill-info">
+                  <div class="key-skill-text">
+                    <span class="key-skill-name">IoT & Systèmes Embarqués</span>
+                    <span class="key-skill-val">95%</span>
+                  </div>
+                  <div class="key-skill-bar-bg">
+                    <div class="key-skill-bar-fill bg-cyan"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="key-skill-card glass-card clickable-card" data-skill-id="ia" style="--width: 92%;">
+                <div class="key-skill-icon"><i data-lucide="brain-circuit" class="text-blue"></i></div>
+                <div class="key-skill-info">
+                  <div class="key-skill-text">
+                    <span class="key-skill-name">Intelligence Artificielle</span>
+                    <span class="key-skill-val">92%</span>
+                  </div>
+                  <div class="key-skill-bar-bg">
+                    <div class="key-skill-bar-fill bg-blue"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="key-skill-card glass-card clickable-card" data-skill-id="cyber" style="--width: 90%;">
+                <div class="key-skill-icon"><i data-lucide="shield-check" class="text-pink"></i></div>
+                <div class="key-skill-info">
+                  <div class="key-skill-text">
+                    <span class="key-skill-name">Cybersécurité & Réseaux</span>
+                    <span class="key-skill-val">90%</span>
+                  </div>
+                  <div class="key-skill-bar-bg">
+                    <div class="key-skill-bar-fill bg-pink"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="key-skill-card glass-card clickable-card" data-skill-id="workflows" style="--width: 92%;">
+                <div class="key-skill-icon"><i data-lucide="git-branch" class="text-cyan"></i></div>
+                <div class="key-skill-info">
+                  <div class="key-skill-text">
+                    <span class="key-skill-name">Automatisation & Workflows</span>
+                    <span class="key-skill-val">92%</span>
+                  </div>
+                  <div class="key-skill-bar-bg">
+                    <div class="key-skill-bar-fill bg-cyan"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="key-skill-card glass-card clickable-card" data-skill-id="fullstack" style="--width: 93%;">
+                <div class="key-skill-icon"><i data-lucide="code-2" class="text-purple"></i></div>
+                <div class="key-skill-info">
+                  <div class="key-skill-text">
+                    <span class="key-skill-name">Développement Full-Stack</span>
+                    <span class="key-skill-val">93%</span>
+                  </div>
+                  <div class="key-skill-bar-bg">
+                    <div class="key-skill-bar-fill bg-purple"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="key-skill-card glass-card clickable-card" data-skill-id="electricite" style="--width: 92%;">
+                <div class="key-skill-icon"><i data-lucide="zap" class="text-purple"></i></div>
+                <div class="key-skill-info">
+                  <div class="key-skill-text">
+                    <span class="key-skill-name">Électricité Industrielle</span>
+                    <span class="key-skill-val">92%</span>
+                  </div>
+                  <div class="key-skill-bar-bg">
+                    <div class="key-skill-bar-fill bg-purple"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="key-skill-card glass-card clickable-card" data-skill-id="api" style="--width: 90%;">
+                <div class="key-skill-icon"><i data-lucide="layers" class="text-cyan"></i></div>
+                <div class="key-skill-info">
+                  <div class="key-skill-text">
+                    <span class="key-skill-name">API & Automates (Zelio, etc.)</span>
+                    <span class="key-skill-val">90%</span>
+                  </div>
+                  <div class="key-skill-bar-bg">
+                    <div class="key-skill-bar-fill bg-cyan"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="key-skill-card glass-card clickable-card" data-skill-id="electronique" style="--width: 90%;">
+                <div class="key-skill-icon"><i data-lucide="radio" class="text-blue"></i></div>
+                <div class="key-skill-info">
+                  <div class="key-skill-text">
+                    <span class="key-skill-name">Électronique</span>
+                    <span class="key-skill-val">90%</span>
+                  </div>
+                  <div class="key-skill-bar-bg">
+                    <div class="key-skill-bar-fill bg-blue"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="key-skill-card glass-card clickable-card" data-skill-id="cloud" style="--width: 90%;">
+                <div class="key-skill-icon"><i data-lucide="cloud-lightning" class="text-purple"></i></div>
+                <div class="key-skill-info">
+                  <div class="key-skill-text">
+                    <span class="key-skill-name">Cloud & DevOps (Vercel)</span>
+                    <span class="key-skill-val">90%</span>
+                  </div>
+                  <div class="key-skill-bar-bg">
+                    <div class="key-skill-bar-fill bg-purple"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="key-skill-card glass-card clickable-card" data-skill-id="uiux" style="--width: 85%;">
+                <div class="key-skill-icon"><i data-lucide="palette" class="text-pink"></i></div>
+                <div class="key-skill-info">
+                  <div class="key-skill-text">
+                    <span class="key-skill-name">UI/UX & Design</span>
+                    <span class="key-skill-val">85%</span>
+                  </div>
+                  <div class="key-skill-bar-bg">
+                    <div class="key-skill-bar-fill bg-pink"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="key-skill-card glass-card clickable-card" data-skill-id="agile" style="--width: 88%;">
+                <div class="key-skill-icon"><i data-lucide="briefcase" class="text-blue"></i></div>
+                <div class="key-skill-info">
+                  <div class="key-skill-text">
+                    <span class="key-skill-name">Gestion de projet Agile</span>
+                    <span class="key-skill-val">88%</span>
+                  </div>
+                  <div class="key-skill-bar-bg">
+                    <div class="key-skill-bar-fill bg-blue"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="key-skill-card glass-card clickable-card" data-skill-id="communication" style="--width: 92%;">
+                <div class="key-skill-icon"><i data-lucide="message-square-text" class="text-cyan"></i></div>
+                <div class="key-skill-info">
+                  <div class="key-skill-text">
+                    <span class="key-skill-name">Communication & Closing</span>
+                    <span class="key-skill-val">92%</span>
+                  </div>
+                  <div class="key-skill-bar-bg">
+                    <div class="key-skill-bar-fill bg-cyan"></div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          
+          <h3 class="subsection-title" style="margin-top: 60px;">// Expertises Détaillées</h3>
+          <div class="skills-grid">
+            <!-- IoT & Systèmes Embarqués -->
+            <div class="skills-category-card glass-card iot-card">
+              <div class="category-header">
+                <i data-lucide="cpu" class="category-icon text-cyan"></i>
+                <h3>IoT & Systèmes Embarqués</h3>
+              </div>
+              <div class="skills-list">
+                <div class="skill-item">
+                  <div class="skill-info">
+                    <span>Arduino, ESP32/ESP8266, Raspberry Pi</span>
+                    <span class="skill-percent">95%</span>
+                  </div>
+                  <div class="skill-bar-bg">
+                    <div class="skill-bar-fill bg-cyan" style="--width: 95%;"></div>
+                  </div>
+                </div>
+                <div class="skill-item">
+                  <div class="skill-info">
+                    <span>Protocoles de Communication (MQTT, CoAP, HTTP)</span>
+                    <span class="skill-percent">91%</span>
+                  </div>
+                  <div class="skill-bar-bg">
+                    <div class="skill-bar-fill bg-cyan" style="--width: 91%;"></div>
+                  </div>
+                </div>
+                <div class="skill-item">
+                  <div class="skill-info">
+                    <span>Domotique & Automatisation</span>
+                    <span class="skill-percent">92%</span>
+                  </div>
+                  <div class="skill-bar-bg">
+                    <div class="skill-bar-fill bg-cyan" style="--width: 92%;"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="tools-tags">
+                <span class="tool-tag">ESP32</span>
+                <span class="tool-tag">Arduino</span>
+                <span class="tool-tag">Raspberry Pi</span>
+                <span class="tool-tag">MQTT</span>
+                <span class="tool-tag">Sensors</span>
+                <span class="tool-tag">C/C++</span>
+              </div>
+            </div>
+
+            <!-- Développement Full Stack -->
+            <div class="skills-category-card glass-card dev-card">
+              <div class="category-header">
+                <i data-lucide="code-2" class="category-icon text-purple"></i>
+                <h3>Développement Logiciel</h3>
+              </div>
+              <div class="skills-list">
+                <div class="skill-item">
+                  <div class="skill-info">
+                    <span>Front-end (React, NextJS, Tailwind CSS)</span>
+                    <span class="skill-percent">93%</span>
+                  </div>
+                  <div class="skill-bar-bg">
+                    <div class="skill-bar-fill bg-purple" style="--width: 93%;"></div>
+                  </div>
+                </div>
+                <div class="skill-item">
+                  <div class="skill-info">
+                    <span>Back-end (Node.js, Express, NestJS, Python)</span>
+                    <span class="skill-percent">90%</span>
+                  </div>
+                  <div class="skill-bar-bg">
+                    <div class="skill-bar-fill bg-purple" style="--width: 90%;"></div>
+                  </div>
+                </div>
+                <div class="skill-item">
+                  <div class="skill-info">
+                    <span>Bases de données (PostgreSQL, MySQL, MongoDB, Prisma)</span>
+                    <span class="skill-percent">89%</span>
+                  </div>
+                  <div class="skill-bar-bg">
+                    <div class="skill-bar-fill bg-purple" style="--width: 89%;"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="tools-tags">
+                <span class="tool-tag">React</span>
+                <span class="tool-tag">NextJS</span>
+                <span class="tool-tag">TypeScript</span>
+                <span class="tool-tag">PostgreSQL</span>
+                <span class="tool-tag">APIs REST</span>
+                <span class="tool-tag">GraphQL</span>
+                <span class="tool-tag">Prisma</span>
+              </div>
+            </div>
+
+            <!-- IA & Data Science -->
+            <div class="skills-category-card glass-card ai-card">
+              <div class="category-header">
+                <i data-lucide="brain-circuit" class="category-icon text-blue"></i>
+                <h3>IA & Machine Learning</h3>
+              </div>
+              <div class="skills-list">
+                <div class="skill-item">
+                  <div class="skill-info">
+                    <span>Python (Scikit-Learn, TensorFlow, OpenCV)</span>
+                    <span class="skill-percent">92%</span>
+                  </div>
+                  <div class="skill-bar-bg">
+                    <div class="skill-bar-fill bg-blue" style="--width: 92%;"></div>
+                  </div>
+                </div>
+                <div class="skill-item">
+                  <div class="skill-info">
+                    <span>Analyse de Données & NLP</span>
+                    <span class="skill-percent">88%</span>
+                  </div>
+                  <div class="skill-bar-bg">
+                    <div class="skill-bar-fill bg-blue" style="--width: 88%;"></div>
+                  </div>
+                </div>
+                <div class="skill-item">
+                  <div class="skill-info">
+                    <span>Prompt Engineering & Intégration Modèles IA</span>
+                    <span class="skill-percent">90%</span>
+                  </div>
+                  <div class="skill-bar-bg">
+                    <div class="skill-bar-fill bg-blue" style="--width: 90%;"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="tools-tags">
+                <span class="tool-tag">Python</span>
+                <span class="tool-tag">TensorFlow</span>
+                <span class="tool-tag">OpenCV</span>
+                <span class="tool-tag">Prompt Engineering</span>
+                <span class="tool-tag">Modèles IA</span>
+              </div>
+            </div>
+
+            <!-- Cybersécurité & Réseaux -->
+            <div class="skills-category-card glass-card cyber-card">
+              <div class="category-header">
+                <i data-lucide="shield-alert" class="category-icon text-pink"></i>
+                <h3>Cybersécurité & Réseaux</h3>
+              </div>
+              <div class="skills-list">
+                <div class="skill-item">
+                  <div class="skill-info">
+                    <span>Réseaux (TCP/IP, DNS, VLAN, VPN, Firewalls)</span>
+                    <span class="skill-percent">90%</span>
+                  </div>
+                  <div class="skill-bar-bg">
+                    <div class="skill-bar-fill bg-pink" style="--width: 90%;"></div>
+                  </div>
+                </div>
+                <div class="skill-item">
+                  <div class="skill-info">
+                    <span>Hacking Éthique (Kali, Nmap, Wireshark, Metasploit)</span>
+                    <span class="skill-percent">84%</span>
+                  </div>
+                  <div class="skill-bar-bg">
+                    <div class="skill-bar-fill bg-pink" style="--width: 84%;"></div>
+                  </div>
+                </div>
+                <div class="skill-item">
+                  <div class="skill-info">
+                    <span>Sécurisation Web & Bonnes pratiques OWASP</span>
+                    <span class="skill-percent">88%</span>
+                  </div>
+                  <div class="skill-bar-bg">
+                    <div class="skill-bar-fill bg-pink" style="--width: 88%;"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="tools-tags">
+                <span class="tool-tag">TCP/IP</span>
+                <span class="tool-tag">Kali Linux</span>
+                <span class="tool-tag">Nmap</span>
+                <span class="tool-tag">Wireshark</span>
+                <span class="tool-tag">OWASP</span>
+                <span class="tool-tag">VPN</span>
+              </div>
+            </div>
+
+            <!-- Informatique Industrielle & Automatisme -->
+            <div class="skills-category-card glass-card industrial-card">
+              <div class="category-header">
+                <i data-lucide="layers" class="category-icon text-cyan"></i>
+                <h3>Informatique Industrielle & Automates</h3>
+              </div>
+              <div class="skills-list">
+                <div class="skill-item">
+                  <div class="skill-info">
+                    <span>Programmation API Zelio Soft (Schneider) & Logo! (Siemens)</span>
+                    <span class="skill-percent">90%</span>
+                  </div>
+                  <div class="skill-bar-bg">
+                    <div class="skill-bar-fill bg-cyan" style="--width: 90%;"></div>
+                  </div>
+                </div>
+                <div class="skill-item">
+                  <div class="skill-info">
+                    <span>Langages Industriels (Ladder, FBD, Grafcet)</span>
+                    <span class="skill-percent">92%</span>
+                  </div>
+                  <div class="skill-bar-bg">
+                    <div class="skill-bar-fill bg-cyan" style="--width: 92%;"></div>
+                  </div>
+                </div>
+                <div class="skill-item">
+                  <div class="skill-info">
+                    <span>Supervision, IHM & Acquisition de données</span>
+                    <span class="skill-percent">88%</span>
+                  </div>
+                  <div class="skill-bar-bg">
+                    <div class="skill-bar-fill bg-cyan" style="--width: 88%;"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="tools-tags">
+                <span class="tool-tag">Zelio Soft</span>
+                <span class="tool-tag">Siemens Logo!</span>
+                <span class="tool-tag">Ladder (LD)</span>
+                <span class="tool-tag">FBD</span>
+                <span class="tool-tag">Grafcet (SFC)</span>
+                <span class="tool-tag">IHM</span>
+              </div>
+            </div>
+
+            <!-- Électricité & Électronique -->
+            <div class="skills-category-card glass-card electricity-card">
+              <div class="category-header">
+                <i data-lucide="zap" class="category-icon text-purple"></i>
+                <h3>Électricité & Électronique</h3>
+              </div>
+              <div class="skills-list">
+                <div class="skill-item">
+                  <div class="skill-info">
+                    <span>Électricité Industrielle & Lecture de Schémas (BT/HT)</span>
+                    <span class="skill-percent">92%</span>
+                  </div>
+                  <div class="skill-bar-bg">
+                    <div class="skill-bar-fill bg-purple" style="--width: 92%;"></div>
+                  </div>
+                </div>
+                <div class="skill-item">
+                  <div class="skill-info">
+                    <span>Câblage, Coffrets, Protections & Mise à la terre</span>
+                    <span class="skill-percent">90%</span>
+                  </div>
+                  <div class="skill-bar-bg">
+                    <div class="skill-bar-fill bg-purple" style="--width: 90%;"></div>
+                  </div>
+                </div>
+                <div class="skill-item">
+                  <div class="skill-info">
+                    <span>Conception Électronique & Microcontrôleurs (Arduino, PIC)</span>
+                    <span class="skill-percent">90%</span>
+                  </div>
+                  <div class="skill-bar-bg">
+                    <div class="skill-bar-fill bg-purple" style="--width: 90%;"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="tools-tags">
+                <span class="tool-tag">Schémas BT/HT</span>
+                <span class="tool-tag">Câblage</span>
+                <span class="tool-tag">PIC</span>
+                <span class="tool-tag">Analogique</span>
+                <span class="tool-tag">Dépannage Cartes</span>
+                <span class="tool-tag">Oscilloscope</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Outils IA & Automatisation que je maîtrise -->
+          <div class="ai-tools-section" style="margin-top: 50px;">
+            <h3 class="section-subtitle" style="text-align: center;">// OUTILS IA & AUTOMATISATION QUE JE MAÎTRISE</h3>
+            <div class="ai-tools-grid">
+              <div class="ai-tool-card glass-card">
+                <div class="ai-tool-icon"><i data-lucide="sparkles" class="text-cyan"></i></div>
+                <h4>Antigravity</h4>
+                <p>La nouvelle génération assistée par IA pour coder plus vite et mieux.</p>
+              </div>
+              <div class="ai-tool-card glass-card">
+                <div class="ai-tool-icon"><i data-lucide="heart" class="text-pink"></i></div>
+                <h4>Lovable</h4>
+                <p>Création d'applications full-stack complexes à partir d'instructions simples.</p>
+              </div>
+              <div class="ai-tool-card glass-card">
+                <div class="ai-tool-icon"><i data-lucide="terminal" class="text-purple"></i></div>
+                <h4>Jules</h4>
+                <p>Assistant de Google pour coder, corriger des bogues et automatiser.</p>
+              </div>
+              <div class="ai-tool-card glass-card">
+                <div class="ai-tool-icon"><i data-lucide="search" class="text-blue"></i></div>
+                <h4>Lumi</h4>
+                <p>Recherche augmentée et génération de réponses contextuelles intelligentes.</p>
+              </div>
+              <div class="ai-tool-card glass-card">
+                <div class="ai-tool-icon"><i data-lucide="message-square" class="text-cyan"></i></div>
+                <h4>ChatGPT</h4>
+                <p>Automatisation de flux, rédaction de rapports et génération de code.</p>
+              </div>
+              <div class="ai-tool-card glass-card">
+                <div class="ai-tool-icon"><i data-lucide="brain" class="text-purple"></i></div>
+                <h4>Claude</h4>
+                <p>Assistant puissant d'analyse logique et de génération de contenu structuré.</p>
+              </div>
+              <div class="ai-tool-card glass-card">
+                <div class="ai-tool-icon"><i data-lucide="layout" class="text-blue"></i></div>
+                <h4>Stitch</h4>
+                <p>Outil IA de design-to-code pour accélérer l'intégration d'interfaces.</p>
+              </div>
+              <div class="ai-tool-card glass-card">
+                <div class="ai-tool-icon"><i data-lucide="zap" class="text-pink"></i></div>
+                <h4>Censpark</h4>
+                <p>Moteur de recherche IA pour synthétiser et organiser l'information complexe.</p>
+              </div>
+            </div>
+            
+            <div class="tools-platforms-sub" style="margin-top: 30px; text-align: center;">
+              <span class="tool-tag">Git & GitHub</span>
+              <span class="tool-tag">Vercel</span>
+              <span class="tool-tag">Netlify</span>
+              <span class="tool-tag">Docker</span>
+              <span class="tool-tag">Postman</span>
+              <span class="tool-tag">VS Code</span>
+              <span class="tool-tag">Figma</span>
+              <span class="tool-tag">Make</span>
+              <span class="tool-tag">Zapier</span>
+              <span class="tool-tag">n8n</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Projets -->
+      <section id="projets" class="projects-section scroll-reveal">
+        <div class="section-container">
+          <div class="section-header">
+            <span class="section-subtitle">// 03. PROJETS RÉALISÉS</span>
+            <h2 class="section-title">Mes Réalisations</h2>
+          </div>
+
+          <!-- Project Filter Menu -->
+          <div class="project-filters">
+            <button class="filter-btn active" data-filter="all">Tous</button>
+            <button class="filter-btn" data-filter="web">Applications Web & SaaS</button>
+            <button class="filter-btn" data-filter="iot">IoT & Domotique</button>
+            <button class="filter-btn" data-filter="cyber">Cybersécurité & Réseau</button>
+          </div>
+
+          <!-- Projects Grid -->
+          <div class="projects-grid" id="projects-grid">
+            <!-- Project 1 (E-Learning) -->
+            <article class="project-card glass-card fade-in-el" data-category="web" data-project-id="e-learning">
+              <div class="project-img-wrapper" style="background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);">
+                <div class="project-overlay-glow"></div>
+                <div class="project-preview-icon"><i data-lucide="book-open"></i></div>
+                <span class="project-tag-badge">E-LEARNING</span>
+              </div>
+              <div class="project-info">
+                <h3>Plateforme E-Learning</h3>
+                <p class="project-desc">Plateforme complète de cours en ligne intégrant des modules de leçons dynamiques, un calendrier interactif et un tableau de bord d'administration robuste.</p>
+                <div class="project-meta">
+                  <div class="meta-item"><strong>Rôle :</strong> Développeur Full-Stack</div>
+                  <div class="meta-item"><strong>Objectif :</strong> Offrir une expérience d'apprentissage fluide avec dashboard admin de suivi.</div>
+                  <div class="meta-item"><strong>Impact :</strong> Solution autonome déployée sur Vercel avec synchronisation Prisma.</div>
+                </div>
+                <div class="project-tech">
+                  <span class="tech-badge">NextJS</span>
+                  <span class="tech-badge">PostgreSQL</span>
+                  <span class="tech-badge">Tailwind</span>
+                  <span class="tech-badge">Prisma</span>
+                  <span class="tech-badge">Vercel</span>
+                </div>
+                <div class="project-links">
+                  <a href="https://github.com/christian-loulouamb" target="_blank" class="project-link"><i data-lucide="github"></i> GitHub</a>
+                  <a href="https://christian-loulouamb.vercel.app" target="_blank" class="project-link live-link"><i data-lucide="external-link"></i> Vercel</a>
+                </div>
+              </div>
+            </article>
+
+            <!-- Project 2 (SaaS de Gestion) -->
+            <article class="project-card glass-card fade-in-el" data-category="web" data-project-id="saas-gestion">
+              <div class="project-img-wrapper" style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);">
+                <div class="project-overlay-glow"></div>
+                <div class="project-preview-icon"><i data-lucide="database"></i></div>
+                <span class="project-tag-badge">SAAS DE GESTION</span>
+              </div>
+              <div class="project-info">
+                <h3>SaaS de Gestion d'Entreprise</h3>
+                <p class="project-desc">Application SaaS de planification et d'administration de flux pour la gestion intelligente des équipes, des ressources et des flux d'affaires.</p>
+                <div class="project-meta">
+                  <div class="meta-item"><strong>Rôle :</strong> Concepteur & Développeur</div>
+                  <div class="meta-item"><strong>Objectif :</strong> Structurer l'organisation des flux de production et rôles d'utilisateurs.</div>
+                  <div class="meta-item"><strong>Impact :</strong> Optimisation des flux administratifs et intégration base de données scalable.</div>
+                </div>
+                <div class="project-tech">
+                  <span class="tech-badge">NestJS</span>
+                  <span class="tech-badge">Node.js</span>
+                  <span class="tech-badge">PostgreSQL</span>
+                  <span class="tech-badge">Tailwind</span>
+                  <span class="tech-badge">Vercel</span>
+                </div>
+                <div class="project-links">
+                  <a href="https://github.com/christian-loulouamb" target="_blank" class="project-link"><i data-lucide="github"></i> GitHub</a>
+                  <a href="https://christian-loulouamb.vercel.app" target="_blank" class="project-link live-link"><i data-lucide="external-link"></i> Vercel</a>
+                </div>
+              </div>
+            </article>
+
+            <!-- Project 3 (IoT Domotique) -->
+            <article class="project-card glass-card fade-in-el" data-category="iot" data-project-id="iot-domotique">
+              <div class="project-img-wrapper" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);">
+                <div class="project-overlay-glow"></div>
+                <div class="project-preview-icon"><i data-lucide="home"></i></div>
+                <span class="project-tag-badge">IOT / EMBARQUÉ</span>
+              </div>
+              <div class="project-info">
+                <h3>Système IoT Domotique</h3>
+                <p class="project-desc">Plateforme matérielle et logicielle de surveillance environnementale et de contrôle à distance en temps réel d'équipements de maison intelligente.</p>
+                <div class="project-meta">
+                  <div class="meta-item"><strong>Rôle :</strong> Ingénieur IoT</div>
+                  <div class="meta-item"><strong>Objectif :</strong> Surveiller les capteurs de sécurité et commander les actionneurs à distance.</div>
+                  <div class="meta-item"><strong>Impact :</strong> Transmission fiable via protocole léger MQTT et tableau de bord de supervision.</div>
+                </div>
+                <div class="project-tech">
+                  <span class="tech-badge">ESP32</span>
+                  <span class="tech-badge">MQTT</span>
+                  <span class="tech-badge">InfluxDB</span>
+                  <span class="tech-badge">Node-RED</span>
+                  <span class="tech-badge">C++</span>
+                </div>
+                <div class="project-links">
+                  <a href="https://github.com/christian-loulouamb" target="_blank" class="project-link"><i data-lucide="github"></i> GitHub</a>
+                  <a href="#" class="project-link live-link"><i data-lucide="external-link"></i> Démo IoT</a>
+                </div>
+              </div>
+            </article>
+
+            <!-- Project 4 (Détection d'intrusion) -->
+            <article class="project-card glass-card fade-in-el" data-category="cyber" data-project-id="detect-intrusion">
+              <div class="project-img-wrapper" style="background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);">
+                <div class="project-overlay-glow"></div>
+                <div class="project-preview-icon"><i data-lucide="shield-alert"></i></div>
+                <span class="project-tag-badge">CYBERSÉCURITÉ</span>
+              </div>
+              <div class="project-info">
+                <h3>Détection d'Intrusion Réseau</h3>
+                <p class="project-desc">Système automatisé de surveillance des flux réseau, capable de repérer les signatures suspectes et de déclencher des alertes immédiates.</p>
+                <div class="project-meta">
+                  <div class="meta-item"><strong>Rôle :</strong> Ingénieur Sécurité Réseau</div>
+                  <div class="meta-item"><strong>Objectif :</strong> Identifier les comportements d'intrusion et tentatives de scan de ports.</div>
+                  <div class="meta-item"><strong>Impact :</strong> Déclenchement automatique d'alertes par notification système et logs de sécurité.</div>
+                </div>
+                <div class="project-tech">
+                  <span class="tech-badge">Python</span>
+                  <span class="tech-badge">Scapy</span>
+                  <span class="tech-badge">ELK Stack</span>
+                  <span class="tech-badge">SQLite</span>
+                </div>
+                <div class="project-links">
+                  <a href="https://github.com/christian-loulouamb" target="_blank" class="project-link"><i data-lucide="github"></i> GitHub</a>
+                  <a href="#" class="project-link live-link"><i data-lucide="external-link"></i> Logs Démo</a>
+                </div>
+              </div>
+            </article>
+
+            <!-- Project 5 (Portfolio Personnel) -->
+            <article class="project-card glass-card fade-in-el" data-category="web" data-project-id="portfolio">
+              <div class="project-img-wrapper" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                <div class="project-overlay-glow"></div>
+                <div class="project-preview-icon"><i data-lucide="user"></i></div>
+                <span class="project-tag-badge">PORTFOLIO</span>
+              </div>
+              <div class="project-info">
+                <h3>Portfolio Personnel Interactif</h3>
+                <p class="project-desc">Site vitrine personnel haut de gamme hébergé sur Vercel avec des graphismes futuristes et un blog technique intégré.</p>
+                <div class="project-meta">
+                  <div class="meta-item"><strong>Rôle :</strong> Développeur Front-End</div>
+                  <div class="meta-item"><strong>Objectif :</strong> Présenter son expertise et ses réalisations de manière immersive et moderne.</div>
+                  <div class="meta-item"><strong>Impact :</strong> Excellente notation SEO et interactions fluides 60fps.</div>
+                </div>
+                <div class="project-tech">
+                  <span class="tech-badge">NextJS</span>
+                  <span class="tech-badge">Tailwind</span>
+                  <span class="tech-badge">Framer Motion</span>
+                  <span class="tech-badge">Vercel</span>
+                  <span class="tech-badge">Intersection API</span>
+                </div>
+                <div class="project-links">
+                  <a href="https://github.com/christian-loulouamb" target="_blank" class="project-link"><i data-lucide="github"></i> GitHub</a>
+                  <a href="https://christian-loulouamb.vercel.app" target="_blank" class="project-link live-link"><i data-lucide="external-link"></i> Vercel</a>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Services -->
+      <section id="services" class="services-section scroll-reveal">
+        <div class="section-container">
+          <div class="section-header">
+            <span class="section-subtitle">// 04. SECTEURS CLÉS</span>
+            <h2 class="section-title">Mes Services & Expertises</h2>
+          </div>
+          
+          <div class="services-grid">
+            <!-- Service 1 -->
+            <div class="service-card glass-card">
+              <div class="service-icon"><i data-lucide="cpu"></i></div>
+              <h3>Systèmes Intelligents</h3>
+              <p>Conception et gestion d'architectures de réseaux de capteurs et intégration d'automates programmables industriels (Zelio Soft, etc.).</p>
+              <ul class="service-benefits">
+                <li><i data-lucide="check" class="text-cyan"></i> Réseaux de capteurs</li>
+                <li><i data-lucide="check" class="text-cyan"></i> Automates Zelio & API</li>
+              </ul>
+              <a href="#contact" class="service-cta">Me renseigner <i data-lucide="arrow-right"></i></a>
+            </div>
+
+            <!-- Service 2 -->
+            <div class="service-card glass-card">
+              <div class="service-icon"><i data-lucide="radio"></i></div>
+              <h3>IoT & Systèmes Embarqués</h3>
+              <p>Développement de solutions connectées sur cartes microcontrôleurs avec protocoles de transfert de données optimisés.</p>
+              <ul class="service-benefits">
+                <li><i data-lucide="check" class="text-purple"></i> Arduino, ESP32, Raspberry Pi</li>
+                <li><i data-lucide="check" class="text-purple"></i> Protocoles MQTT, CoAP, HTTP</li>
+              </ul>
+              <a href="#contact" class="service-cta">Me renseigner <i data-lucide="arrow-right"></i></a>
+            </div>
+
+            <!-- Service 3 -->
+            <div class="service-card glass-card">
+              <div class="service-icon"><i data-lucide="shield-check"></i></div>
+              <h3>Cybersécurité & Réseaux</h3>
+              <p>Architecture réseau sécurisée, détection d'intrusions, audits de vulnérabilités et application des normes OWASP.</p>
+              <ul class="service-benefits">
+                <li><i data-lucide="check" class="text-blue"></i> Tests d'intrusion (Kali Linux)</li>
+                <li><i data-lucide="check" class="text-blue"></i> Sécurisation d'infrastructures</li>
+              </ul>
+              <a href="#contact" class="service-cta">Me renseigner <i data-lucide="arrow-right"></i></a>
+            </div>
+
+            <!-- Service 4 -->
+            <div class="service-card glass-card">
+              <div class="service-icon"><i data-lucide="brain-circuit"></i></div>
+              <h3>IA & Machine Learning</h3>
+              <p>Création et intégration de modèles prédictifs, vision par ordinateur, traitement automatique du langage (NLP) et prompt engineering.</p>
+              <ul class="service-benefits">
+                <li><i data-lucide="check" class="text-pink"></i> TensorFlow, Scikit-learn, OpenCV</li>
+                <li><i data-lucide="check" class="text-pink"></i> Automatisation intelligente</li>
+              </ul>
+              <a href="#contact" class="service-cta">Me renseigner <i data-lucide="arrow-right"></i></a>
+            </div>
+
+            <!-- Service 5 -->
+            <div class="service-card glass-card">
+              <div class="service-icon"><i data-lucide="git-branch"></i></div>
+              <h3>Automatisation & Workflows</h3>
+              <p>Conception d'APIs et mise en place de flux de travail automatisés via des plateformes d'orchestration modernes.</p>
+              <ul class="service-benefits">
+                <li><i data-lucide="check" class="text-cyan"></i> Intégration de n8n, Make, Zapier</li>
+                <li><i data-lucide="check" class="text-cyan"></i> Synchronisation d'APIs REST</li>
+              </ul>
+              <a href="#contact" class="service-cta">Me renseigner <i data-lucide="arrow-right"></i></a>
+            </div>
+
+            <!-- Service 6 -->
+            <div class="service-card glass-card">
+              <div class="service-icon"><i data-lucide="cloud-lightning"></i></div>
+              <h3>Cloud & Déploiement</h3>
+              <p>Mise en production sécurisée de plateformes applicatives et configurations CI/CD conteneurisées avec Docker.</p>
+              <ul class="service-benefits">
+                <li><i data-lucide="check" class="text-purple"></i> Hébergement Vercel & Netlify</li>
+                <li><i data-lucide="check" class="text-purple"></i> Conteneurisation Docker & Git</li>
+              </ul>
+              <a href="#contact" class="service-cta">Me renseigner <i data-lucide="arrow-right"></i></a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Témoignages -->
+      <section id="temoignages" class="testimonials-section scroll-reveal">
+        <div class="section-container">
+          <div class="section-header text-center">
+            <span class="section-subtitle">// 05. AVIS CLIENTS</span>
+            <h2 class="section-title">Avis de mes Partenaires</h2>
+          </div>
+
+          <!-- Carousel Testimonials -->
+          <div class="carousel-wrapper">
+            <div class="testimonials-carousel" id="testimonials-carousel">
+              <!-- Slide 1 -->
+              <div class="testimonial-slide active">
+                <div class="testimonial-rating">
+                  <i data-lucide="star" class="star-icon fill-gold"></i>
+                  <i data-lucide="star" class="star-icon fill-gold"></i>
+                  <i data-lucide="star" class="star-icon fill-gold"></i>
+                  <i data-lucide="star" class="star-icon fill-gold"></i>
+                  <i data-lucide="star" class="star-icon fill-gold"></i>
+                </div>
+                <p class="testimonial-text">
+                  "Travailler avec Christian a été une révélation pour notre startup. Il a transformé notre vision produit en une architecture IoT robuste et une interface web ultra fluide que nos clients adorent. Son professionnalisme et sa rapidité d'exécution sont exceptionnels."
+                </p>
+                <div class="testimonial-user">
+                  <div class="user-avatar" style="background: #1e3a8a; color: #60a5fa;">SB</div>
+                  <div class="user-info">
+                    <h4>Sarah Belkacem</h4>
+                    <span>CEO de NeuraHealth Startup</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Slide 2 -->
+              <div class="testimonial-slide">
+                <div class="testimonial-rating">
+                  <i data-lucide="star" class="star-icon fill-gold"></i>
+                  <i data-lucide="star" class="star-icon fill-gold"></i>
+                  <i data-lucide="star" class="star-icon fill-gold"></i>
+                  <i data-lucide="star" class="star-icon fill-gold"></i>
+                  <i data-lucide="star" class="star-icon fill-gold"></i>
+                </div>
+                <p class="testimonial-text">
+                  "Christian possède une double compétence rare : un haut niveau en génie logiciel et un œil technique industriel exceptionnel pour l'IoT et l'automatisme. Les workflows d'automatisation qu'il a conçus ont drastiquement amélioré nos temps de traitement."
+                </p>
+                <div class="testimonial-user">
+                  <div class="user-avatar" style="background: #5b21b6; color: #c084fc;">LD</div>
+                  <div class="user-info">
+                    <h4>Laurent Dubois</h4>
+                    <span>Product Director @ ApexFlow</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Slide 3 -->
+              <div class="testimonial-slide">
+                <div class="testimonial-rating">
+                  <i data-lucide="star" class="star-icon fill-gold"></i>
+                  <i data-lucide="star" class="star-icon fill-gold"></i>
+                  <i data-lucide="star" class="star-icon fill-gold"></i>
+                  <i data-lucide="star" class="star-icon fill-gold"></i>
+                  <i data-lucide="star" class="star-icon fill-gold"></i>
+                </div>
+                <p class="testimonial-text">
+                  "L'audit de cybersécurité réalisé par Christian sur notre plateforme de paiement a révélé des failles critiques que nos équipes internes avaient manquées. Ses préconisations claires nous ont permis de sécuriser notre infrastructure rapidement."
+                </p>
+                <div class="testimonial-user">
+                  <div class="user-avatar" style="background: #9d174d; color: #f472b6;">ML</div>
+                  <div class="user-info">
+                    <h4>Marc Lemaire</h4>
+                    <span>CTO @ SafePay</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Carousel Nav Controls -->
+            <div class="carousel-controls">
+              <button class="carousel-btn btn-prev" id="carousel-prev" aria-label="Avis précédent">
+                <i data-lucide="chevron-left"></i>
+              </button>
+              <div class="carousel-dots" id="carousel-dots">
+                <span class="carousel-dot active" data-slide="0"></span>
+                <span class="carousel-dot" data-slide="1"></span>
+                <span class="carousel-dot" data-slide="2"></span>
+              </div>
+              <button class="carousel-btn btn-next" id="carousel-next" aria-label="Avis suivant">
+                <i data-lucide="chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Parcours (Timeline Expériences & Formations) -->
+      <section id="experience" class="experience-section scroll-reveal">
+        <div class="section-container">
+          <div class="section-header">
+            <span class="section-subtitle">// 05. HISTORIQUE</span>
+            <h2 class="section-title">Mon Parcours Professionnel & Éducatif</h2>
+          </div>
+
+          <div class="timeline-container">
+            <div class="timeline-line"></div>
+            
+            <!-- Timeline Item 1: Expérience Indépendant -->
+            <div class="timeline-item left fade-in-el">
+              <div class="timeline-dot"></div>
+              <div class="timeline-card glass-card">
+                <div class="timeline-date">2022 - PRÉSENT</div>
+                <h3>Fondateur - Développeur Full Stack & Consultant IA</h3>
+                <h4>Travailleur Indépendant</h4>
+                <p>Développement d'applications web et mobiles, conception de systèmes IoT, automatisation de processus métier, intégration IA et cybersécurité. Accompagnement de clients dans leur transformation digitale.</p>
+                <span class="timeline-skill-tag">Full Stack</span>
+                <span class="timeline-skill-tag">Systèmes IoT</span>
+                <span class="timeline-skill-tag">Consulting IA</span>
+              </div>
+            </div>
+
+            <!-- Timeline Item 2: Master 1 Maroc -->
+            <div class="timeline-item right fade-in-el">
+              <div class="timeline-dot"></div>
+              <div class="timeline-card glass-card">
+                <div class="timeline-date">2022 / 2023</div>
+                <h3>Master 1 - Spécialité Ingénierie Aéronautique & Spatial</h3>
+                <h4>Aeronautical Academy au Maroc</h4>
+                <p>Études de haut niveau en structures et systèmes aéronautiques, programmation spatiale et instrumentation électronique.</p>
+                <span class="timeline-skill-tag">Aéronautique</span>
+                <span class="timeline-skill-tag">Spatial</span>
+                <span class="timeline-skill-tag">Électronique</span>
+              </div>
+            </div>
+
+            <!-- Timeline Item 3: Stagiaire Automatisme -->
+            <div class="timeline-item left fade-in-el">
+              <div class="timeline-dot"></div>
+              <div class="timeline-card glass-card">
+                <div class="timeline-date">JANVIER 2021</div>
+                <h3>Stagiaire - Développement & Automatisme</h3>
+                <h4>Atelier privé d'électronique et d'automatisme</h4>
+                <p>Développement de solutions d'automatisation et maintenance de systèmes électroniques complexes.</p>
+                <span class="timeline-skill-tag">Automatismes</span>
+                <span class="timeline-skill-tag">Électronique</span>
+              </div>
+            </div>
+
+            <!-- Timeline Item 4: Licence Génie Électrique IUT -->
+            <div class="timeline-item right fade-in-el">
+              <div class="timeline-dot"></div>
+              <div class="timeline-card glass-card">
+                <div class="timeline-date">2020 / 2021</div>
+                <h3>Licence de Technologie - Génie Électrique & Informatique Industrielle</h3>
+                <h4>IUT de Douala - Cameroun</h4>
+                <p>Spécialisation dans les machines électriques, automatismes programmables industriels (API) et informatique embarquée.</p>
+                <span class="timeline-skill-tag">Génie Électrique</span>
+                <span class="timeline-skill-tag">IUT de Douala</span>
+                <span class="timeline-skill-tag">API</span>
+              </div>
+            </div>
+
+            <!-- Timeline Item 5: Stagiaire Archiviste Total -->
+            <div class="timeline-item left fade-in-el">
+              <div class="timeline-dot"></div>
+              <div class="timeline-card glass-card">
+                <div class="timeline-date">JANV. - JUIN 2020</div>
+                <h3>Stagiaire - Assistant Archiviste</h3>
+                <h4>Société Total Cameroun</h4>
+                <p>Gestion et numérisation des documents, organisation des archives et préparation des rapports d'audit de données.</p>
+                <span class="timeline-skill-tag">Archivage</span>
+                <span class="timeline-skill-tag">Total Cameroun</span>
+              </div>
+            </div>
+
+            <!-- Timeline Item 6: BTS STAMA -->
+            <div class="timeline-item right fade-in-el">
+              <div class="timeline-dot"></div>
+              <div class="timeline-card glass-card">
+                <div class="timeline-date">2019 / 2020</div>
+                <h3>BTS - Informatique Industrielle & Automatisme</h3>
+                <h4>STAMA - Douala, Cameroun</h4>
+                <p>Obtention du Brevet de Technicien Supérieur avec spécialisation en circuits logiques, programmation d'automates et électricité.</p>
+                <span class="timeline-skill-tag">BTS</span>
+                <span class="timeline-skill-tag">Automatisme</span>
+              </div>
+            </div>
+
+            <!-- Timeline Item 7: Enseignant CIA -->
+            <div class="timeline-item left fade-in-el">
+              <div class="timeline-dot"></div>
+              <div class="timeline-card glass-card">
+                <div class="timeline-date">JUIN - SEPT. 2018</div>
+                <h3>Professeur Vacataire de Mathématiques & Physiques</h3>
+                <h4>Institut privé CIA</h4>
+                <p>Enseignement des mathématiques et sciences physiques, encadrement d'élèves de niveau secondaire et préparation aux examens.</p>
+                <span class="timeline-skill-tag">Enseignement</span>
+                <span class="timeline-skill-tag">Sciences</span>
+              </div>
+            </div>
+
+            <!-- Timeline Item 8: Prépa ESIAC -->
+            <div class="timeline-item right fade-in-el">
+              <div class="timeline-dot"></div>
+              <div class="timeline-card glass-card">
+                <div class="timeline-date">2017 / 2018</div>
+                <h3>Classe Préparatoire Spéciale Option MPSI</h3>
+                <h4>ESIAC - Douala, Cameroun</h4>
+                <p>Année de formation intensive en Mathématiques, Physique et Sciences de l'Ingénieur.</p>
+                <span class="timeline-skill-tag">MPSI</span>
+                <span class="timeline-skill-tag">ESIAC</span>
+              </div>
+            </div>
+
+            <!-- Timeline Item 9: Bac C -->
+            <div class="timeline-item left fade-in-el">
+              <div class="timeline-dot"></div>
+              <div class="timeline-card glass-card">
+                <div class="timeline-date">2016 / 2017</div>
+                <h3>Baccalauréat Série C (Mathématiques & Physiques)</h3>
+                <h4>Cameroun</h4>
+                <p>Obtention du diplôme de fin d'études secondaires scientifiques axé sur les mathématiques pures et la physique.</p>
+                <span class="timeline-skill-tag">Baccalauréat C</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section Certifications -->
+          <div class="certifications-wrapper" style="margin-top: 60px;">
+            <h3 class="section-subtitle" style="text-align: center;">// CERTIFICATIONS & ATTESTATIONS D'EXCELLENCE</h3>
+            <div class="certifications-grid">
+              <div class="cert-card glass-card">
+                <i data-lucide="shield-check" class="text-cyan"></i>
+                <div class="cert-info">
+                  <h4>Introduction to Cybersecurity</h4>
+                  <span>Cisco Networking Academy</span>
+                </div>
+              </div>
+              <div class="cert-card glass-card">
+                <i data-lucide="brain" class="text-purple"></i>
+                <div class="cert-info">
+                  <h4>AI for Everyone</h4>
+                  <span>Coursera</span>
+                </div>
+              </div>
+              <div class="cert-card glass-card">
+                <i data-lucide="layout" class="text-blue"></i>
+                <div class="cert-info">
+                  <h4>Responsive Web Design</h4>
+                  <span>freeCodeCamp</span>
+                </div>
+              </div>
+              <div class="cert-card glass-card">
+                <i data-lucide="code" class="text-pink"></i>
+                <div class="cert-info">
+                  <h4>JavaScript Algorithms & Data Structures</h4>
+                  <span>freeCodeCamp</span>
+                </div>
+              </div>
+              <div class="cert-card glass-card">
+                <i data-lucide="cpu" class="text-cyan"></i>
+                <div class="cert-info">
+                  <h4>Prompt Engineering</h4>
+                  <span>OpenAI Academy</span>
+                </div>
+              </div>
+              <div class="cert-card glass-card">
+                <i data-lucide="git-merge" class="text-purple"></i>
+                <div class="cert-info">
+                  <h4>Git & GitHub</h4>
+                  <span>Udemy</span>
+                </div>
+              </div>
+              <div class="cert-card glass-card">
+                <i data-lucide="wifi" class="text-blue"></i>
+                <div class="cert-info">
+                  <h4>Advanced IoT & Embedded Systems</h4>
+                  <span>Udemy (En cours)</span>
+                </div>
+              </div>
+              <div class="cert-card glass-card">
+                <i data-lucide="lock" class="text-pink"></i>
+                <div class="cert-info">
+                  <h4>CompTIA Security+</h4>
+                  <span>Préparation active</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Blog -->
+      <section id="blog" class="blog-section scroll-reveal">
+        <div class="section-container">
+          <div class="section-header">
+            <span class="section-subtitle">// 07. BLOG TECH</span>
+            <h2 class="section-title">Dernières Actualités & Tutoriels</h2>
+          </div>
+
+          <div class="blog-grid">
+            <!-- Article 1 -->
+            <article class="blog-card glass-card">
+              <div class="blog-img-header" style="background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);">
+                <span class="blog-category">IoT & Automatisme</span>
+              </div>
+              <div class="blog-body">
+                <span class="blog-date">25 Mai 2026 • 6 min de lecture</span>
+                <h3>Sécuriser les architectures IoT et capteurs connectés</h3>
+                <p>Un guide complet sur la protection de vos flottes d'objets connectés (ESP32, Arduino) contre les failles d'injection et d'écoute sur le protocole MQTT.</p>
+                <a href="#" class="blog-read-more">Lire l'article <i data-lucide="arrow-right"></i></a>
+              </div>
+            </article>
+
+            <!-- Article 2 -->
+            <article class="blog-card glass-card">
+              <div class="blog-img-header" style="background: linear-gradient(135deg, #1d4ed8 0%, #06b6d4 100%);">
+                <span class="blog-category">Intelligence Artificielle</span>
+              </div>
+              <div class="blog-body">
+                <span class="blog-date">18 Mai 2026 • 8 min de lecture</span>
+                <h3>Comment déployer des micro-modèles IA sur microcontrôleurs</h3>
+                <p>Découvrez les techniques d'optimisation et d'évaluation avec OpenCV et TensorFlow Lite pour faire tourner des décisions d'IA en local.</p>
+                <a href="#" class="blog-read-more">Lire l'article <i data-lucide="arrow-right"></i></a>
+              </div>
+            </article>
+
+            <!-- Article 3 -->
+            <article class="blog-card glass-card">
+              <div class="blog-img-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                <span class="blog-category">Automatisation</span>
+              </div>
+              <div class="blog-body">
+                <span class="blog-date">05 Mai 2026 • 5 min de lecture</span>
+                <h3>L'automatisation de flux : n8n et Make en environnement industriel</h3>
+                <p>Pourquoi l'utilisation combinée d'APIs REST, de webhooks et d'outils d'orchestration transforme l'acquisition de données industrielles.</p>
+                <a href="#" class="blog-read-more">Lire l'article <i data-lucide="arrow-right"></i></a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Contact -->
+      <section id="contact" class="contact-section scroll-reveal">
+        <div class="section-container">
+          <div class="section-header">
+            <span class="section-subtitle">// 06. CONTACT</span>
+            <h2 class="section-title">Discutons de vos projets</h2>
+          </div>
+
+          <div class="contact-grid">
+            <!-- Contact Info -->
+            <div class="contact-info-pane">
+              <h3>Entrons en relation</h3>
+              <p>Que ce soit pour une opportunité de collaboration industrielle, une automatisation de processus avec l'IA, ou le déploiement de capteurs IoT sécurisés, écrivez-moi.</p>
+              
+              <div class="contact-details">
+                <div class="contact-item">
+                  <div class="contact-icon"><i data-lucide="mail"></i></div>
+                  <div>
+                    <h4>Email</h4>
+                    <a href="mailto:christianoperez360@gmail.com">christianoperez360@gmail.com</a>
+                  </div>
+                </div>
+                
+                <div class="contact-item">
+                  <div class="contact-icon"><i data-lucide="phone"></i></div>
+                  <div>
+                    <h4>WhatsApp / Téléphone</h4>
+                    <a href="https://wa.me/237697221997" target="_blank">+237 697 221 997</a>
+                  </div>
+                </div>
+
+                <div class="contact-item">
+                  <div class="contact-icon"><i data-lucide="map-pin"></i></div>
+                  <div>
+                    <h4>Localisation</h4>
+                    <span>Douala, Cameroun / Akwa</span>
+                  </div>
+                </div>
+                
+                <div class="contact-item">
+                  <div class="contact-icon"><i data-lucide="calendar"></i></div>
+                  <div>
+                    <h4>Date de naissance</h4>
+                    <span>04 Septembre 1996</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="contact-socials">
+                <a href="https://linkedin.com/in/christian-loulouamb" target="_blank" aria-label="LinkedIn Profile" class="social-btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+                </a>
+                <a href="https://facebook.com" target="_blank" aria-label="Facebook Profile" class="social-btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                </a>
+                <a href="https://christian-loulouamb.vercel.app" target="_blank" aria-label="Website" class="social-btn"><i data-lucide="globe"></i></a>
+                <a href="https://wa.me/237697221997" target="_blank" aria-label="WhatsApp Direct" class="social-btn"><i data-lucide="phone-call"></i></a>
+              </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="contact-form-pane glass-card">
+              <form id="contact-form" class="contact-form" novalidate>
+                <div class="form-group">
+                  <label for="name">Votre Nom</label>
+                  <input type="text" id="name" name="name" placeholder="Ex: Jean Dupont" required />
+                  <span class="error-msg" id="error-name">Ce champ est requis</span>
+                </div>
+                
+                <div class="form-group">
+                  <label for="email">Votre Email</label>
+                  <input type="email" id="email" name="email" placeholder="Ex: jean@gmail.com" required />
+                  <span class="error-msg" id="error-email">Veuillez entrer une adresse email valide</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="subject">Sujet</label>
+                  <input type="text" id="subject" name="subject" placeholder="Ex: Projet d'automatisation IoT..." required />
+                  <span class="error-msg" id="error-subject">Ce champ est requis</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="message">Votre Message</label>
+                  <textarea id="message" name="message" rows="5" placeholder="Présentez brièvement vos besoins industriels ou digitaux..." required></textarea>
+                  <span class="error-msg" id="error-message">Veuillez écrire un message</span>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-submit">
+                  <span>Envoyer le message</span>
+                  <i data-lucide="send"></i>
+                </button>
+              </form>
+
+              <!-- Success Overlay Notification -->
+              <div class="form-success-overlay" id="form-success-overlay">
+                <div class="success-content">
+                  <div class="success-icon"><i data-lucide="check-circle-2"></i></div>
+                  <h3>Message Envoyé !</h3>
+                  <p>Merci pour votre intérêt. Je reviendrai vers vous rapidement.</p>
+                  <button class="btn btn-secondary" id="btn-reset-form">Fermer</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="section-container footer-container">
+        <div class="footer-left">
+          <p>© 2026 Christian Loulouamb. Tous droits réservés.</p>
+        </div>
+        <div class="footer-right">
+          <p>« L'innovation distingue un leader d'un suiveur. »</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Project Details Modal Overlay -->
+    <div id="project-modal" class="project-modal">
+      <div class="modal-backdrop" id="modal-backdrop"></div>
+      <div class="modal-container glass-card">
+        <button class="modal-close" id="modal-close" aria-label="Fermer">
+          <i data-lucide="x"></i>
+        </button>
+        <div class="modal-content">
+          <div class="modal-header-visual" id="modal-visual">
+            <div class="modal-visual-glow"></div>
+            <i id="modal-icon" class="modal-visual-icon"></i>
+          </div>
+          <div class="modal-body-content">
+            <span class="modal-category" id="modal-category">Catégorie</span>
+            <h2 id="modal-title">Titre du Projet</h2>
+            
+            <p class="modal-desc" id="modal-desc">Description...</p>
+            
+            <div class="modal-details-grid">
+              <div class="modal-detail-block">
+                <h4><i data-lucide="help-circle"></i> Le Défi</h4>
+                <p id="modal-challenge">Le défi technique...</p>
+              </div>
+              <div class="modal-detail-block">
+                <h4><i data-lucide="check-circle-2"></i> La Solution</h4>
+                <p id="modal-solution">La solution implémentée...</p>
+              </div>
+            </div>
+
+            <div class="modal-features-block">
+              <h4><i data-lucide="cpu"></i> Fonctionnalités Clés</h4>
+              <ul id="modal-features" class="modal-features-list">
+                <!-- Features list items populated by JS -->
+              </ul>
+            </div>
+
+            <div class="modal-tech-block">
+              <h4>Technologies utilisées</h4>
+              <div class="project-tech" id="modal-tech">
+                <!-- Tech tags populated by JS -->
+              </div>
+            </div>
+
+            <div class="modal-footer-links">
+              <a href="#" id="modal-link-code" target="_blank" class="btn btn-secondary">
+                <i data-lucide="github"></i> Code Source
+              </a>
+              <a href="#" id="modal-link-live" target="_blank" class="btn btn-primary">
+                <i data-lucide="external-link"></i> Démo Live
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skill Details Modal Overlay -->
+    <div id="skill-modal" class="project-modal">
+      <div class="modal-backdrop" id="skill-modal-backdrop"></div>
+      <div class="modal-container glass-card">
+        <button class="modal-close" id="skill-modal-close" aria-label="Fermer">
+          <i data-lucide="x"></i>
+        </button>
+        <div class="modal-content">
+          <div class="modal-header-visual" id="skill-modal-visual">
+            <div class="modal-visual-glow"></div>
+            <i id="skill-modal-icon" class="modal-visual-icon"></i>
+          </div>
+          <div class="modal-body-content">
+            <span class="modal-category" id="skill-modal-category">Compétence</span>
+            <h2 id="skill-modal-title">Nom de la Compétence</h2>
+            
+            <p class="modal-desc" id="skill-modal-desc">Description générale...</p>
+            
+            <div class="modal-details-grid">
+              <div class="modal-detail-block">
+                <h4><i data-lucide="award"></i> Les Avantages</h4>
+                <ul id="skill-modal-advantages" class="modal-features-list">
+                  <!-- Advantages list populated by JS -->
+                </ul>
+              </div>
+              <div class="modal-detail-block">
+                <h4><i data-lucide="wrench"></i> Application Réelle</h4>
+                <p id="skill-modal-usecase">Cas d'usage et utilité en entreprise...</p>
+              </div>
+            </div>
+
+            <!-- Illustration Réelle -->
+            <div class="modal-image-block" style="margin-bottom: 30px; border-top: 1px solid rgba(15, 23, 42, 0.06); padding-top: 25px;">
+              <h4 style="font-family: var(--font-heading); font-size: 1rem; font-weight: 700; color: var(--color-white); margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+                <i data-lucide="image" class="text-accent" style="color: var(--color-accent);"></i> Illustration Réelle
+              </h4>
+              <div class="skill-illustration-container">
+                <img id="skill-modal-image" src="" alt="Illustration" />
+              </div>
+            </div>
+
+            <div class="modal-tech-block">
+              <h4>Technologies & Outils associés</h4>
+              <div class="project-tech" id="skill-modal-tech">
+                <!-- Tech tags populated by JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating Back to Top Button -->
+    <button id="scroll-top" class="scroll-top-btn" aria-label="Retour en haut">
+      <i data-lucide="arrow-up"></i>
+    </button>
+
+    <!-- Script Entry Point -->
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
