@@ -372,10 +372,11 @@ function initScrollEffects() {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('revealed');
+        revealObserver.unobserve(entry.target); // Stop observing once revealed
       }
     });
   }, {
-    threshold: 0.15
+    threshold: 0.05 // Lower threshold for better mobile and tall element behavior
   });
 
   document.querySelectorAll('.scroll-reveal').forEach(el => {

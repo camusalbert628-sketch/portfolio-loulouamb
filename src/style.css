@@ -2557,6 +2557,12 @@ body.dark-mode .tool-tag {
   html {
     font-size: 15px;
   }
+
+  .scroll-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
   
   .section-container {
     padding: 60px 16px;
