@@ -616,7 +616,7 @@ const skillsDetails = {
     ],
     usecase: "Création de systèmes de suivi environnemental en usine et automatisation d'IHM de contrôle avec alertes SMS/Email instantanées.",
     tech: ["ESP32", "Arduino", "Raspberry Pi", "C/C++", "MQTT", "CoAP"],
-    image: "/src/assets/iot_electronics.png",
+    image: "/iot_electronics.png",
     color: "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)",
     icon: "cpu"
   },
@@ -631,7 +631,7 @@ const skillsDetails = {
     ],
     usecase: "Mise en place d'assistants IA conversationnels et de modèles de vision par ordinateur pour le contrôle qualité automatique de pièces en ligne.",
     tech: ["Python", "TensorFlow", "Scikit-Learn", "OpenCV", "Prompt Engineering"],
-    image: "/src/assets/ai_automation.png",
+    image: "/ai_automation.png",
     color: "linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%)",
     icon: "brain-circuit"
   },
@@ -646,7 +646,7 @@ const skillsDetails = {
     ],
     usecase: "Configuration de réseaux industriels segmentés et déploiement d'IDS légers pour surveiller en temps réel l'intégrité de parcs d'équipements IoT.",
     tech: ["TCP/IP", "VPN", "Kali Linux", "Nmap", "Wireshark", "Metasploit", "OWASP"],
-    image: "/src/assets/cybersecurity.png",
+    image: "/cybersecurity.png",
     color: "linear-gradient(135deg, #db2777 0%, #ec4899 100%)",
     icon: "shield-check"
   },
@@ -661,7 +661,7 @@ const skillsDetails = {
     ],
     usecase: "Interconnexion automatique de formulaires clients avec des CRM d'entreprise et des systèmes de messagerie industrielle via des APIs.",
     tech: ["n8n", "Make (Integromat)", "Zapier", "Webhooks", "APIs REST"],
-    image: "/src/assets/ai_automation.png",
+    image: "/ai_automation.png",
     color: "linear-gradient(135deg, #0891b2 0%, #7c3aed 100%)",
     icon: "git-branch"
   },
@@ -676,7 +676,7 @@ const skillsDetails = {
     ],
     usecase: "Création de tableaux de bord industriels en temps réel affichant les données d'acquisition en provenance d'usines.",
     tech: ["React", "Next.js", "Node.js", "Express", "TypeScript", "PostgreSQL", "MongoDB"],
-    image: "/src/assets/fullstack_cloud.png",
+    image: "/fullstack_cloud.png",
     color: "linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)",
     icon: "code-2"
   },
@@ -691,7 +691,7 @@ const skillsDetails = {
     ],
     usecase: "Câblage complet d'armoires d'automatisation avec disjoncteurs, relais thermiques et variateurs de vitesse.",
     tech: ["Schémas BT/HT", "Câblage", "Protection", "Distribution", "Mise à la terre"],
-    image: "/src/assets/electricity_plc.png",
+    image: "/electricity_plc.png",
     color: "linear-gradient(135deg, #7c3aed 0%, #1d4ed8 100%)",
     icon: "zap"
   },
@@ -706,7 +706,7 @@ const skillsDetails = {
     ],
     usecase: "Automatisation d'une station de pompage d'eau avec automate Zelio Logic et gestion des alarmes de niveau.",
     tech: ["Zelio Soft", "SoMachine", "Ladder (LD)", "FBD", "Grafcet (SFC)", "IHM"],
-    image: "/src/assets/electricity_plc.png",
+    image: "/electricity_plc.png",
     color: "linear-gradient(135deg, #0891b2 0%, #1d4ed8 100%)",
     icon: "layers"
   },
@@ -721,7 +721,7 @@ const skillsDetails = {
     ],
     usecase: "Conception d'une carte d'acquisition de température sur-mesure basée sur un microcontrôleur AVR.",
     tech: ["PCB Design", "Circuits Analogiques/Numériques", "Soudure CMS", "Oscilloscope", "Multimètre"],
-    image: "/src/assets/iot_electronics.png",
+    image: "/iot_electronics.png",
     color: "linear-gradient(135deg, #1d4ed8 0%, #06b6d4 100%)",
     icon: "radio"
   },
@@ -736,7 +736,7 @@ const skillsDetails = {
     ],
     usecase: "Configuration d'un pipeline CI/CD automatisé pour le déploiement d'un tableau de bord de supervision sur Vercel.",
     tech: ["Vercel", "GitHub Actions", "Docker", "Netlify", "Postman", "VS Code"],
-    image: "/src/assets/fullstack_cloud.png",
+    image: "/fullstack_cloud.png",
     color: "linear-gradient(135deg, #7c3aed 0%, #db2777 100%)",
     icon: "cloud-lightning"
   },
@@ -751,7 +751,7 @@ const skillsDetails = {
     ],
     usecase: "Maquettage complet de l'interface mobile d'une application domotique sous Figma.",
     tech: ["Figma", "Photoshop", "Glassmorphism", "Responsive Design", "Wireframing"],
-    image: "/src/assets/design_management.png",
+    image: "/design_management.png",
     color: "linear-gradient(135deg, #db2777 0%, #7c3aed 100%)",
     icon: "palette"
   },
@@ -766,7 +766,7 @@ const skillsDetails = {
     ],
     usecase: "Gestion d'un projet de migration logicielle sur 3 mois en utilisant le framework Scrum.",
     tech: ["Scrum", "Kanban", "Trello", "Agile Roadmap", "Cadrage technique"],
-    image: "/src/assets/design_management.png",
+    image: "/design_management.png",
     color: "linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%)",
     icon: "briefcase"
   },
@@ -781,7 +781,7 @@ const skillsDetails = {
     ],
     usecase: "Présentation d'un plan d'automatisation d'usine devant un comité de direction et obtention de l'accord commercial.",
     tech: ["Closing", "Pitch commercial", "Négociation B2B", "Vulgarisation technique"],
-    image: "/src/assets/design_management.png",
+    image: "/design_management.png",
     color: "linear-gradient(135deg, #0891b2 0%, #db2777 100%)",
     icon: "message-square-text"
   }
