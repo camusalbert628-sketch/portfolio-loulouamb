@@ -3668,3 +3668,44 @@ body.dark-mode .ai-chat-input-area input:focus {
   }
 }
 
+/* AI Agent Reasoning Block */
+.reasoning-block {
+  background: rgba(109, 40, 217, 0.04);
+  border-left: 2px solid var(--color-primary);
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  border-radius: 4px 12px 12px 4px;
+  font-size: 0.78rem;
+  color: var(--color-gray);
+  font-family: monospace;
+}
+
+body.dark-mode .reasoning-block {
+  background: rgba(8, 145, 178, 0.04);
+  border-left: 2px solid var(--color-accent);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.reasoning-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 4px;
+  font-family: var(--font-heading);
+}
+
+body.dark-mode .reasoning-header {
+  color: var(--color-accent);
+}
+
+.reasoning-header i {
+  width: 12px;
+  height: 12px;
+}
+
+.reasoning-content {
+  line-height: 1.35;
+}
+

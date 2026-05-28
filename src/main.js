@@ -1111,6 +1111,9 @@ function initAICopilot() {
 
   if (!wrapper || !trigger || !panel || !closeBtn || !form || !input || !chatBody) return;
 
+  // Context history and last intent state
+  let lastIntent = null;
+
   // Toggle Chat Panel
   trigger.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -1209,172 +1212,379 @@ function initAICopilot() {
     showTypingIndicator();
 
     // Select suitable response
-    const { reply, callback } = getAgentResponse(message);
+    const response = getAgentResponse(message);
 
-    // Simulate thinking delay (random 700ms - 1300ms)
-    const delay = 700 + Math.random() * 600;
+    // Simulate thinking delay (random 800ms - 1400ms)
+    const delay = 800 + Math.random() * 600;
     setTimeout(() => {
       removeTypingIndicator();
-      appendMessage(reply, 'bot');
+      
+      // Build visual reasoning block
+      let messageHtml = '';
+      if (response.reasoning && response.reasoning.length > 0) {
+        messageHtml += `
+          <div class="reasoning-block">
+            <div class="reasoning-header">
+              <i data-lucide="brain"></i>
+              <span>Raisonnement de l'agent...</span>
+            </div>
+            <div class="reasoning-content">
+              ${response.reasoning.join('<br>')}
+            </div>
+          </div>
+        `;
+      }
+      messageHtml += `<div class="bot-reply-text">${response.reply}</div>`;
+      
+      appendMessage(messageHtml, 'bot');
       
       // Execute any UI action associated with this intent
-      if (callback) {
-        setTimeout(callback, 300);
+      if (response.callback) {
+        setTimeout(response.callback, 400);
       }
     }, delay);
   }
 
-  // NLP matching logic
+  // Context-aware NLP matching logic with Reasoning Steps
   function getAgentResponse(query) {
     const text = query.toLowerCase()
       .normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // strip accents
     
-    // 1. Projects triggers
+    // Check if query is a positive confirmation or generic follow-up
+    const isFollowUp = text === 'oui' || text === 'ok' || text.includes('montre') || text.includes('exemple') || text.includes('voir') || text.includes('fiche') || text.includes('ouvrir') || text.includes('details') || text.includes('dis en plus') || text.includes('dis-en plus');
+
+    // Contextual redirection based on history
+    if (isFollowUp && lastIntent) {
+      if (lastIntent === 'ia' || lastIntent === 'cyber') {
+        const prevContext = lastIntent;
+        lastIntent = 'detect-intrusion';
+        return {
+          reasoning: [
+            `• Saisie : "${query}" (Demande de précisions)`,
+            `• Contexte actif : "${prevContext}" hérité de l'échange précédent`,
+            `• Analyse logique : L'utilisateur souhaite voir un projet concret appliquant cette compétence`,
+            `• Action IHM : Ouverture du modal technique "Détection d'Intrusion Réseau"`
+          ],
+          reply: "Dans le cadre de la cybersécurité et de la programmation système, Christian a développé un **Système de Détection d'Intrusion Réseau**. Il s'agit d'un script Python (Scapy) d'écoute active couplé à une suite Elasticsearch/Kibana (ELK) pour historiser et visualiser les anomalies de flux en temps réel.<br><br>J'ouvre sa fiche technique sur votre écran à l'instant ! 🛡️",
+          callback: () => triggerProjectModal('detect-intrusion')
+        };
+      }
+      if (lastIntent === 'iot' || lastIntent === 'api' || lastIntent === 'electricite' || lastIntent === 'electronique') {
+        const prevContext = lastIntent;
+        lastIntent = 'iot-domotique';
+        return {
+          reasoning: [
+            `• Saisie : "${query}" (Demande de précisions)`,
+            `• Contexte actif : "${prevContext}" hérité de l'échange précédent`,
+            `• Analyse logique : L'utilisateur souhaite voir un projet concret appliquant cette compétence`,
+            `• Action IHM : Ouverture du modal technique "Système IoT Domotique"`
+          ],
+          reply: "Pour appliquer ses compétences en systèmes embarqués et automatisme, Christian a conçu un **Système IoT Domotique** complet. Il s'agit d'une architecture d'acquisition physique basée sur ESP32, utilisant le protocole MQTT pour alimenter InfluxDB, avec supervision sur Node-RED.<br><br>J'affiche sa fiche technique détaillée sur votre écran ! 🏠",
+          callback: () => triggerProjectModal('iot-domotique')
+        };
+      }
+      if (lastIntent === 'workflows' || lastIntent === 'fullstack') {
+        const prevContext = lastIntent;
+        lastIntent = 'saas-gestion';
+        return {
+          reasoning: [
+            `• Saisie : "${query}" (Demande de précisions)`,
+            `• Contexte actif : "${prevContext}" hérité de l'échange précédent`,
+            `• Analyse logique : L'utilisateur souhaite voir un projet de développement logiciel complet`,
+            `• Action IHM : Ouverture du modal technique "SaaS de Gestion"`
+          ],
+          reply: "En lien avec le génie logiciel, Christian a développé un **SaaS de Gestion d'Entreprise** professionnel. Cette application multi-locataire (multi-tenant) est programmée sous NestJS (Node.js) et s'appuie sur PostgreSQL pour coordonner les flux d'affaires et la planification d'équipes.<br><br>J'ouvre la présentation technique complète du projet ! 💼",
+          callback: () => triggerProjectModal('saas-gestion')
+        };
+      }
+    }
+
+    // 1. Direct Project Matches
     if (text.includes('saas') || (text.includes('projet') && (text.includes('gestion') || text.includes('entreprise')))) {
+      lastIntent = 'saas-gestion';
       return {
-        reply: "Le **SaaS de Gestion d'Entreprise** est une application conçue avec NestJS et PostgreSQL pour synchroniser les équipes et planifier les projets.<br><br>J'ouvre sa présentation technique détaillée pour vous ! 💼",
+        reasoning: [
+          `• Saisie : "${query}"`,
+          `• Intention : Présenter le projet SaaS de Gestion`,
+          `• Extraction de la base : NestJS, Node.js, PostgreSQL, Multi-tenancy`,
+          `• Action IHM : Lancement du modal "saas-gestion"`
+        ],
+        reply: "Le **SaaS de Gestion d'Entreprise** est une application logicielle modulaire et robuste. Conçue avec NestJS et PostgreSQL, elle offre un cadre multi-tenant ultra-sécurisé pour administrer les ressources et planifier l'activité des structures.<br><br>J'ouvre immédiatement sa fiche technique descriptive à l'écran ! 💼",
         callback: () => triggerProjectModal('saas-gestion')
       };
     }
     if (text.includes('learning') || text.includes('cours') || text.includes('enseign') || (text.includes('projet') && text.includes('etudiant'))) {
+      lastIntent = 'e-learning';
       return {
-        reply: "La **Plateforme E-Learning** est un projet d'apprentissage en ligne complet développé avec NextJS, Prisma et PostgreSQL, configuré sur Vercel.<br><br>J'ouvre sa documentation technique complète ! 📚",
+        reasoning: [
+          `• Saisie : "${query}"`,
+          `• Intention : Présenter la plateforme E-Learning`,
+          `• Extraction de la base : NextJS, PostgreSQL, Prisma, SSR`,
+          `• Action IHM : Lancement du modal "e-learning"`
+        ],
+        reply: "La **Plateforme E-Learning** est un projet d'enseignement en ligne dynamique bâti sous NextJS (Server Side Rendering) et structuré avec PostgreSQL et l'ORM Prisma. Elle intègre des workflows d'analyse pour le suivi administratif des progrès académiques.<br><br>J'ouvre sa fiche descriptive complète sur votre écran ! 📚",
         callback: () => triggerProjectModal('e-learning')
       };
     }
-    if (text.includes('domotique') || text.includes('iot') || text.includes('maison') || text.includes('connect')) {
-      // If they ask for general IoT skills vs project
-      if (text.includes('competence') || text.includes('savoir')) {
-        return {
-          reply: "Christian est très compétent en **IoT & Domotique** (ESP32, Raspberry Pi, protocoles MQTT, CoAP, programmation C++).<br><br>J'ouvre sa fiche de compétence IoT sur votre écran ! 🔌",
-          callback: () => triggerSkillModal('iot')
-        };
-      }
+    if (text.includes('domotique') || text.includes('maison') || text.includes('connecte')) {
+      lastIntent = 'iot-domotique';
       return {
-        reply: "Le **Système IoT Domotique** intègre des puces ESP32 et transmet en temps réel via MQTT vers une base InfluxDB supervisée par Node-RED.<br><br>J'ouvre la fiche technique de cette réalisation ! 🏠",
+        reasoning: [
+          `• Saisie : "${query}"`,
+          `• Intention : Présenter le projet Domotique Connectée`,
+          `• Extraction de la base : ESP32, MQTT, InfluxDB, Node-RED, C++`,
+          `• Action IHM : Lancement du modal "iot-domotique"`
+        ],
+        reply: "Le **Système IoT Domotique** est une maquette de maison intelligente. Elle s'appuie sur des microcontrôleurs ESP32 programmés en C++ pour l'acquisition et la commande physique, communicant via MQTT avec une base de données temporelle InfluxDB et un outil de supervision Node-RED.<br><br>J'affiche sa documentation technique sur votre écran ! 🏠",
         callback: () => triggerProjectModal('iot-domotique')
       };
     }
     if (text.includes('intrusion') || text.includes('scapy') || text.includes('cybersecurite') || text.includes('securite')) {
-      if (text.includes('competence') || text.includes('savoir')) {
-        return {
-          reply: "En **Cybersécurité**, Christian réalise des audits, sécurise les réseaux industriels, utilise Kali Linux, Wireshark, et configure des IDS.<br><br>J'ouvre sa fiche de compétence sécurité ! 🛡️",
-          callback: () => triggerSkillModal('cyber')
-        };
-      }
+      lastIntent = 'detect-intrusion';
       return {
-        reply: "Le **Système de Détection d'Intrusion Réseau** est écrit en Python avec Scapy, indexé dans Elasticsearch et Kibana pour détecter les scans de ports.<br><br>J'ouvre sa fiche technique détaillée ! 🛡️",
+        reasoning: [
+          `• Saisie : "${query}"`,
+          `• Intention : Présenter le système IDS réseau`,
+          `• Extraction de la base : Python, Scapy, ELK Stack, SQLite`,
+          `• Action IHM : Lancement du modal "detect-intrusion"`
+        ],
+        reply: "Le **Système de Détection d'Intrusion Réseau (IDS)** est une solution d'écoute et d'analyse des flux réseau écrite en Python avec Scapy. Les anomalies et alertes de sécurité sont historisées dans SQLite et indexées dans Kibana (suite ELK) pour une surveillance en temps réel.<br><br>J'affiche sa fiche technique détaillée à l'écran ! 🛡️",
         callback: () => triggerProjectModal('detect-intrusion')
       };
     }
     if (text.includes('portfolio') || text.includes('vitrine') || text.includes('site')) {
+      lastIntent = 'portfolio';
       return {
-        reply: "Ce **Portfolio Interactif** est bâti en HTML/CSS Glassmorphism et Javascript pour offrir un rendu fluide à 60fps et optimisé pour le SEO.<br><br>J'ouvre sa fiche descriptive ! 💻",
+        reasoning: [
+          `• Saisie : "${query}"`,
+          `• Intention : Présenter le projet Portfolio`,
+          `• Extraction de la base : HTML5 sémantique, CSS Glassmorphism, JS Lerping`,
+          `• Action IHM : Lancement du modal "portfolio"`
+        ],
+        reply: "Ce **Portfolio Personnel Interactif** a été développé en HTML/CSS Glassmorphism et JavaScript pour allier design cyber-futuriste immersif, fluidité des animations à 60fps et optimisation SEO complète.<br><br>J'ouvre sa présentation détaillée ! 💻",
         callback: () => triggerProjectModal('portfolio')
       };
     }
 
     // 2. Skill specific triggers
     if (text.includes('ia') || text.includes('intelligence artificielle') || text.includes('machine learning') || text.includes('tensorflow') || text.includes('python')) {
+      lastIntent = 'ia';
       return {
-        reply: "Christian possède une expertise en **IA & Machine Learning** (TensorFlow, OpenCV, Python, Prompt Engineering pour LLMs).<br><br>J'ouvre sa fiche de compétence IA pour vous ! 🧠",
+        reasoning: [
+          `• Saisie : "${query}"`,
+          `• Intention : Présenter les compétences en IA`,
+          `• Extraction de la base : Python, TensorFlow, OpenCV, Prompt Engineering`,
+          `• Action IHM : Lancement du modal d'expertise "Intelligence Artificielle"`
+        ],
+        reply: "Christian maîtrise l'**Intelligence Artificielle** appliquée à l'analyse métier et aux flux industriels. Ses compétences incluent l'utilisation de **Python, TensorFlow, OpenCV** (pour la vision par ordinateur) et le **Prompt Engineering** de grands modèles de langage.<br><br>J'ouvre sa fiche d'expertise IA détaillée à l'écran ! 🧠",
         callback: () => triggerSkillModal('ia')
       };
     }
-    if (text.includes('automate') || text.includes('zelio') || text.includes(' ladder') || text.includes('grafcet')) {
+    if (text.includes('iot') || text.includes('embarque') || text.includes('esp32') || text.includes('arduino') || text.includes('raspberry')) {
+      lastIntent = 'iot';
       return {
-        reply: "Christian maîtrise la programmation d'**Automates Programmables Industriels (API)** (Zelio, Schneider, SoMachine, Ladder, SFC).<br><br>J'ouvre sa fiche de compétence en Automatique Industrielle ! ⚙️",
+        reasoning: [
+          `• Saisie : "${query}"`,
+          `• Intention : Présenter les compétences en IoT & Embarqué`,
+          `• Extraction de la base : ESP32, C/C++, MQTT, Raspberry Pi`,
+          `• Action IHM : Lancement du modal d'expertise "IoT & Systèmes Embarqués"`
+        ],
+        reply: "En **IoT et Systèmes Embarqués**, Christian conçoit des solutions d'acquisition physiques robustes. Il programme en **C/C++** sur des cibles **ESP32 et Arduino** et assure des transmissions fiables via le protocole léger **MQTT**.<br><br>J'ouvre sa fiche d'expertise IoT complète sur l'écran ! 🔌",
+        callback: () => triggerSkillModal('iot')
+      };
+    }
+    if (text.includes('automate') || text.includes('zelio') || text.includes(' ladder') || text.includes('grafcet')) {
+      lastIntent = 'api';
+      return {
+        reasoning: [
+          `• Saisie : "${query}"`,
+          `• Intention : Présenter les compétences en API & Automates`,
+          `• Extraction de la base : Zelio Soft, Schneider, Ladder (LD), Grafcet (SFC)`,
+          `• Action IHM : Lancement du modal d'expertise "API & Automates"`
+        ],
+        reply: "Christian maîtrise le développement d'**Automates Programmables Industriels (API)**. Il programme des automates Schneider (gamme Zelio, etc.) sous **Zelio Soft et SoMachine** en utilisant les langages **Ladder, FBD et Grafcet** pour le pilotage de processus physiques réels.<br><br>J'affiche sa fiche d'expertise en automatique industrielle ! ⚙️",
         callback: () => triggerSkillModal('api')
       };
     }
     if (text.includes('electricite') || text.includes('cablage') || text.includes('armoire') || text.includes('tension')) {
+      lastIntent = 'electricite';
       return {
-        reply: "Christian est qualifié en **Électricité Industrielle** (câblage d'armoires BT/HT, lecture de schémas électriques, disjoncteurs, sécurité).<br><br>J'ouvre sa fiche de compétence en électricité ! ⚡",
+        reasoning: [
+          `• Saisie : "${query}"`,
+          `• Intention : Présenter les compétences en Électricité`,
+          `• Extraction de la base : Câblage BT/HT, Armoires de puissance, Disjoncteurs`,
+          `• Action IHM : Lancement du modal d'expertise "Électricité Industrielle"`
+        ],
+        reply: "Christian possède une solide formation pratique en **Électricité Industrielle**. Il assure la lecture de schémas électriques complexes, le câblage d'armoires de puissance et de commande BT/HT, et la configuration des organes de protection électrique (relais thermiques, disjoncteurs).<br><br>J'ouvre sa fiche de compétence électricité à l'écran ! ⚡",
         callback: () => triggerSkillModal('electricite')
       };
     }
-    if (text.includes('electronique') || text.includes('pcb') || text.includes('soudure') || text.includes('oscilloscope')) {
+    if (text.includes('electronique') || text.includes('pcb') || text.includes('soudure')) {
+      lastIntent = 'electronique';
       return {
-        reply: "Christian conçoit et répare des **Circuits Électroniques** (analogiques/numériques, routage de PCB sous Altium/EasyEDA, soudures CMS).<br><br>J'ouvre sa fiche de compétence en électronique ! 📻",
+        reasoning: [
+          `• Saisie : "${query}"`,
+          `• Intention : Présenter les compétences en Électronique`,
+          `• Extraction de la base : Conception PCB, Circuits Analogiques/Numériques, CMS`,
+          `• Action IHM : Lancement du modal d'expertise "Électronique"`
+        ],
+        reply: "Christian réalise le prototypage matériel complet de ses solutions connectées. Ses compétences englobent la conception de circuits imprimés (**PCB Design** sous Altium/EasyEDA), le diagnostic de pannes électriques et le soudage précis au composant près (soudures CMS).<br><br>J'ouvre sa fiche d'expertise électronique sur l'écran ! 📻",
         callback: () => triggerSkillModal('electronique')
       };
     }
     if (text.includes('workflow') || text.includes('automatisation') || text.includes('n8n') || text.includes('make') || text.includes('zapier')) {
+      lastIntent = 'workflows';
       return {
-        reply: "Christian automatise les flux d'affaires avec des outils d'intégration de workflows Cloud comme **n8n, Make et Zapier**.<br><br>J'ouvre sa fiche de compétence en automatisation ! 🔄",
+        reasoning: [
+          `• Saisie : "${query}"`,
+          `• Intention : Présenter les compétences en Automatisation`,
+          `• Extraction de la base : n8n, Make, Webhooks, APIs REST`,
+          `• Action IHM : Lancement du modal d'expertise "Automatisation & Workflows"`
+        ],
+        reply: "Pour éliminer les processus manuels et synchroniser les outils cloud, Christian développe des flux automatisés avancés en connectant des APIs web et services cloud via **n8n, Make (Integromat) et Zapier**.<br><br>J'affiche sa fiche d'expertise en automatisation ! 🔄",
         callback: () => triggerSkillModal('workflows')
       };
     }
-    if (text.includes('dev') || text.includes('full') || text.includes('stack') || text.includes('web') || text.includes('code') || text.includes('program') || text.includes('react') || text.includes('next')) {
+    if (text.includes('dev') || text.includes('full') || text.includes('stack') || text.includes('web') || text.includes('react') || text.includes('next')) {
+      lastIntent = 'fullstack';
       return {
-        reply: "Christian développe des applications web dynamiques avec le stack **React, Next.js, Node.js, Express, TypeScript et PostgreSQL**.<br><br>J'ouvre sa fiche de développement web ! 💻",
+        reasoning: [
+          `• Saisie : "${query}"`,
+          `• Intention : Présenter les compétences en Développement Web`,
+          `• Extraction de la base : React, NextJS, Node.js, TypeScript, PostgreSQL`,
+          `• Action IHM : Lancement du modal d'expertise "Développement Full-Stack"`
+        ],
+        reply: "Christian conçoit des applications web performantes et scalables de bout en bout. Son stack moderne s'appuie sur **React et Next.js** en front-end et sur **Node.js, Express et NestJS** en back-end, avec base de données relationnelle **PostgreSQL (Prisma ORM)**.<br><br>J'ouvre sa fiche de développement full-stack ! 💻",
         callback: () => triggerSkillModal('fullstack')
       };
     }
-
-    // 3. General category triggers
-    if (text.includes('competence') || text.includes('savoir') || text.includes('techno') || text.includes('outil') || text.includes('peux tu faire') || text.includes('faire')) {
+    if (text.includes('agile') || text.includes('scrum') || text.includes('kanban') || text.includes('projet')) {
+      lastIntent = 'agile';
       return {
-        reply: "Christian Loulouamb est qualifié en :<br>- **IoT & Embarqué** (ESP32, C++, MQTT)<br>- **Intelligence Artificielle** (Python, Machine Learning)<br>- **Développement Web Full-Stack** (NextJS, React, Node.js)<br>- **Électricité & Automates** (Zelio, Câblage, Ladder)<br>- **Cybersécurité & Réseaux** (IDS, Wireshark, Cisco).<br><br>Cliquez sur l'une des cartes de la section **Compétences** pour afficher ses détails ou posez-moi une question sur un de ces sujets ! 💡",
+        reasoning: [
+          `• Saisie : "${query}"`,
+          `• Intention : Présenter les compétences en Gestion de Projet`,
+          `• Extraction de la base : Scrum, Kanban, Trello, Agile Roadmaps`,
+          `• Action IHM : Lancement du modal d'expertise "Gestion de projet Agile"`
+        ],
+        reply: "Christian applique les méthodologies agiles (**Scrum et Kanban**) pour planifier, découper et orchestrer les phases de développement. Il utilise des outils de suivi comme Trello et Jira pour assurer le respect des délais et la cohésion d'équipe.<br><br>J'ouvre sa fiche d'expertise projet à l'écran ! 💼",
+        callback: () => triggerSkillModal('agile')
+      };
+    }
+    if (text.includes('communication') || text.includes('closing') || text.includes('vente') || text.includes('negociation')) {
+      lastIntent = 'communication';
+      return {
+        reasoning: [
+          `• Saisie : "${query}"`,
+          `• Intention : Présenter les compétences en Communication`,
+          `• Extraction de la base : Closing, Pitch commercial, Négociation B2B`,
+          `• Action IHM : Lancement du modal d'expertise "Communication & Closing"`
+        ],
+        reply: "Christian allie rigueur scientifique et aisance relationnelle. Il est compétent pour vulgariser des projets complexes d'ingénierie devant des décideurs, piloter des présentations commerciales et négocier des contrats d'affaires B2B.<br><br>J'affiche sa fiche descriptive de compétences ! 💬",
+        callback: () => triggerSkillModal('communication')
+      };
+    }
+
+    // 3. Category Sections
+    if (text.includes('competence') || text.includes('savoir') || text.includes('techno') || text.includes('peux tu faire') || text.includes('faire')) {
+      return {
+        reasoning: [
+          `• Saisie : "${query}"`,
+          `• Intention : Redirection générale vers la section Compétences`,
+          `• Action IHM : Défilement vertical fluide vers #competences`
+        ],
+        reply: "Christian possède une expertise pluridisciplinaire en **Informatique Industrielle, IoT, IA et Cybersécurité**. Ses compétences sont divisées en expertises système et technologies logicielles.<br><br>Je viens de faire défiler l'écran vers sa section **Compétences** pour vous en donner une vision d'ensemble. Cliquez sur l'une des cartes pour en afficher le détail ! 💡",
         callback: () => scrollToSection('competences')
       };
     }
     if (text.includes('projet') || text.includes('realisation') || text.includes('creation') || text.includes('oeuvre')) {
       return {
-        reply: "Christian a réalisé des projets concrets tels qu'un **SaaS de gestion d'entreprise**, une **plateforme e-learning NextJS**, un **système domotique ESP32**, et un **IDS de détection réseau**.<br><br>Dites-moi : *'Montre-moi le projet saas'* ou *'Parle-moi du projet domotique'* pour ouvrir sa fiche technique ! 📂",
+        reasoning: [
+          `• Saisie : "${query}"`,
+          `• Intention : Redirection générale vers la section Projets`,
+          `• Action IHM : Défilement vertical fluide vers #projets`
+        ],
+        reply: "Christian a orchestré et déployé plusieurs projets de domotique, d'applications SaaS et de sécurité réseau.<br><br>Je vous montre sa section **Projets** ci-dessous. Dites-moi si vous souhaitez que j'ouvre la fiche descriptive de l'une de ces réalisations ! 📂",
         callback: () => scrollToSection('projets')
       };
     }
-    if (text.includes('parcours') || text.includes('experience') || text.includes('etude') || text.includes('formation') || text.includes('ecole') || text.includes('diplome') || text.includes('bts')) {
+    if (text.includes('parcours') || text.includes('experience') || text.includes('etude') || text.includes('formation') || text.includes('ecole') || text.includes('bts') || text.includes('mpsi')) {
       return {
-        reply: "Christian a suivi une classe préparatoire MPSI à l'ESIAC, a obtenu un BTS en électricité/automatismes, a enseigné les mathématiques, et détient des certifications Cisco/Coursera.<br><br>Je vous invite à consulter sa **Timeline interactive** dans la section 'Parcours' ! 🎓",
+        reasoning: [
+          `• Saisie : "${query}"`,
+          `• Intention : Redirection générale vers la section Parcours`,
+          `• Action IHM : Défilement vertical fluide vers #experience`
+        ],
+        reply: "Christian possède un solide bagage scientifique et technique, consolidé en classe prépa MPSI (ESIAC) et lors de son BTS en automatique industrielle, complété par des certifications professionnelles (Cisco, OpenAI, Coursera).<br><br>J'ai déplacé l'écran vers sa **Timeline interactive de parcours**. N'hésitez pas à faire défiler pour observer ses jalons professionnels ! 🎓",
         callback: () => scrollToSection('experience')
       };
     }
     if (text.includes('contact') || text.includes('ecrire') || text.includes('message') || text.includes('mail') || text.includes('telephone') || text.includes('linkedin') || text.includes('facebook')) {
       return {
-        reply: "Vous pouvez contacter Christian par :<br>- **Email** : [loulouambchristian628@gmail.com](mailto:loulouambchristian628@gmail.com)<br>- **Téléphone** : +237 6 56 31 16 02<br>- **Réseaux** : LinkedIn et Facebook.<br><br>J'ai fait défiler la page pour vous présenter le **Formulaire de contact** direct ! ✉️",
+        reasoning: [
+          `• Saisie : "${query}"`,
+          `• Intention : Redirection vers le formulaire de contact`,
+          `• Action IHM : Défilement vertical fluide vers #contact`
+        ],
+        reply: "Vous souhaitez prendre contact avec Christian ? C'est très simple :<br>- **Email** : [loulouambchristian628@gmail.com](mailto:loulouambchristian628@gmail.com)<br>- **Téléphone** : +237 6 56 31 16 02<br><br>Je viens de faire descendre la page sur son **Formulaire de contact** de Christian en bas de page pour que vous puissiez lui envoyer un message en direct ! ✉️",
         callback: () => scrollToSection('contact')
       };
     }
 
-    // 4. Conversational triggers
-    if (text.includes('bonjour') || text.includes('salut') || text.includes('hello') || text.includes('hi') || text.includes('bonsoir') || text.includes('hey')) {
+    // 4. Conversational
+    if (text.includes('bonjour') || text.includes('salut') || text.includes('hello') || text.includes('hi') || text.includes('bonsoir') || text.includes('hey') || text.includes('yo')) {
       return {
-        reply: "Bonjour ! Ravi de vous accueillir. Je suis **CL_COPILOT**, l'assistant IA de Christian. Comment puis-je vous renseigner aujourd'hui ? 😊"
+        reasoning: [
+          `• Saisie : "${query}"`,
+          `• Intention : Accueil et salutations`,
+          `• Objectif : Répondre avec politesse et poser des pistes d'orientation`
+        ],
+        reply: "Bonjour ! Je suis ravi de vous accueillir sur le portfolio de Christian Loulouamb. Je suis **CL_COPILOT**, son copilote virtuel.<br><br>Comment puis-je vous accompagner aujourd'hui ? Je peux par exemple vous présenter ses expertises en **IoT / IA**, ses **projets phares**, ou vous guider pour le **contacter** ! 😊"
       };
     }
-    if (text.includes('qui es tu') || text.includes('qui es-tu') || text.includes('ton nom') || text.includes("qu'es tu") || text.includes("c'est quoi") || text.includes('copilot') || text.includes('robot') || text.includes('bot')) {
+    if (text.includes('qui es tu') || text.includes('qui es-tu') || text.includes('ton nom') || text.includes("qu'es tu") || text.includes("c'est quoi") || text.includes('bot') || text.includes('robot') || text.includes('copilot')) {
       return {
-        reply: "Je suis **CL_COPILOT**, un agent conversationnel configuré pour vous présenter le profil technique, les compétences et les projets de Christian Loulouamb. Je peux également vous aider à le contacter !"
+        reasoning: [
+          `• Saisie : "${query}"`,
+          `• Intention : Demande d'identité de l'agent`,
+          `• Objectif : Clarifier les capacités interactives de l'agent`
+        ],
+        reply: "Je suis **CL_COPILOT**, l'agent virtuel intelligent de Christian. J'ai été conçu pour agir comme un guide interactif. En plus de répondre à vos questions, je peux piloter l'IHM du site, comme faire défiler la page vers une section ou ouvrir des fiches techniques à votre place ! 🤖"
       };
     }
-    if (text.includes('merci') || text.includes('super') || text.includes('cool') || text.includes('parfait')) {
+    if (text.includes('merci') || text.includes('super') || text.includes('cool') || text.includes('parfait') || text.includes('genial')) {
       return {
-        reply: "Je vous en prie ! C'est un plaisir de vous renseigner. Avez-vous d'autres questions sur Christian ? 🚀"
+        reasoning: [
+          `• Saisie : "${query}"`,
+          `• Intention : Remerciements de l'utilisateur`,
+          `• Objectif : Conclure poliment et rester à l'écoute`
+        ],
+        reply: "Je vous en prie ! C'est un réel plaisir de vous accompagner dans la découverte de son profil. Je reste à votre entière disposition si vous souhaitez explorer un autre aspect de son travail ! 🚀"
       };
     }
 
     // 5. Fallback Response
     return {
-      reply: "Je comprends votre intérêt ! Christian possède de nombreuses compétences en **IoT, IA, Cybersécurité, Électricité et Développement Web**.<br><br>N'hésitez pas à cliquer sur les puces ci-dessus ou à me demander par exemple : *'Parle-moi du projet domotique'* ou *'Quelles sont ses compétences ?'*"
+      reasoning: [
+        `• Saisie : "${query}" (Hors dictionnaire strict)`,
+        `• Résolution : Formulation d'une réponse d'aide générale et proposition d'options`
+      ],
+      reply: "Je comprends votre intérêt. Christian est un profil polyvalent expert en **Informatique Industrielle, IoT, IA et Cybersécurité**.<br><br>N'hésitez pas à utiliser les puces d'accès rapide ci-dessus ou posez-moi des questions plus précises, comme :<br>- *'Quelles sont ses compétences en IoT ?'*<br>- *'Parle-moi du projet de détection d'intrusion'*<br>- *'Comment puis-je le contacter ?'*"
     };
   }
 
   // UI Helper actions
   function triggerProjectModal(projectId) {
-    const card = document.querySelector(`.project-card[data-project-id="${projectId}"]`);
+    const card = document.querySelector(`.project-card[data-project-id="\${projectId}"]`);
     if (card) {
-      // Close active modals first
       closeActiveModals();
       setTimeout(() => card.click(), 100);
     }
   }
 
   function triggerSkillModal(skillId) {
-    const card = document.querySelector(`.key-skill-card[data-skill-id="${skillId}"]`);
+    const card = document.querySelector(`.key-skill-card[data-skill-id="\${skillId}"]`);
     if (card) {
-      // Close active modals first
       closeActiveModals();
       setTimeout(() => card.click(), 100);
     }
