@@ -244,10 +244,12 @@ img {
 
 /* Gradients and Glows */
 .text-gradient {
-  background: linear-gradient(135deg, var(--color-white) 40%, var(--color-gray) 100%);
+  background: linear-gradient(135deg, var(--color-white) 20%, var(--color-accent) 50%, var(--color-primary) 80%);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  animation: shineGradient 8s linear infinite;
 }
 
 .text-glow {
@@ -293,20 +295,18 @@ img {
   content: '';
   position: absolute;
   top: 0;
-  left: -100%;
-  width: 100%;
+  left: -150%;
+  width: 50%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-  transition: 0.5s;
-}
-
-.btn-primary:hover::before {
-  left: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transform: skewX(-20deg);
+  animation: btnShimmer 5s infinite ease-in-out;
+  pointer-events: none;
 }
 
 .btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(8, 145, 178, 0.35);
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(8, 145, 178, 0.45), 0 0 15px rgba(109, 40, 217, 0.3);
 }
 
 .btn-secondary {
@@ -488,6 +488,26 @@ img {
   border: var(--border-neon-cyan);
   border-radius: 20px;
   margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cyber-badge::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(8, 145, 178, 0.15),
+    transparent
+  );
+  transform: skewX(-20deg);
+  animation: badgeShimmer 4s infinite ease-in-out;
+  pointer-events: none;
 }
 
 .badge-dot {
@@ -550,6 +570,16 @@ img {
 }
 
 /* Avatar Visuals with floating animations */
+.avatar-float-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  animation: floatAvatar 6s ease-in-out infinite;
+}
+
 .avatar-glow-wrapper {
   position: relative;
   width: 320px;
@@ -557,28 +587,30 @@ img {
   display: flex;
   justify-content: center;
   align-items: center;
-  animation: floatAvatar 6s ease-in-out infinite;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  will-change: transform;
 }
 
 .tech-ring {
   position: absolute;
   border-radius: 50%;
-  border: 1px dashed rgba(8, 145, 178, 0.25);
   pointer-events: none;
+  transform-style: preserve-3d;
 }
 
 .ring-1 {
   width: 385px;
   height: 385px;
   border: 2px dashed rgba(109, 40, 217, 0.2);
-  animation: rotate3dClockwise 25s linear infinite;
+  animation: rotateRing1 25s linear infinite;
 }
 
 .ring-2 {
   width: 355px;
   height: 355px;
   border: 1px dashed rgba(8, 145, 178, 0.35);
-  animation: rotate3dCounter 15s linear infinite;
+  animation: rotateRing2 18s linear infinite;
 }
 
 .ring-3 {
@@ -587,7 +619,7 @@ img {
   border: 1px solid rgba(236, 72, 153, 0.3);
   border-left-color: transparent;
   border-right-color: transparent;
-  animation: rotate3dClockwise 8s ease-in-out infinite;
+  animation: rotateRing3 10s ease-in-out infinite;
 }
 
 .avatar-container {
@@ -2307,6 +2339,21 @@ body.dark-mode .tool-tag {
   100% { transform: rotate(0deg); }
 }
 
+@keyframes rotateRing1 {
+  0% { transform: rotateX(65deg) rotateY(15deg) rotateZ(0deg); }
+  100% { transform: rotateX(65deg) rotateY(15deg) rotateZ(360deg); }
+}
+
+@keyframes rotateRing2 {
+  0% { transform: rotateX(-45deg) rotateY(30deg) rotateZ(360deg); }
+  100% { transform: rotateX(-45deg) rotateY(30deg) rotateZ(0deg); }
+}
+
+@keyframes rotateRing3 {
+  0% { transform: rotateX(25deg) rotateY(-50deg) rotateZ(0deg); }
+  100% { transform: rotateX(25deg) rotateY(-50deg) rotateZ(360deg); }
+}
+
 @keyframes floatAvatar {
   0% { transform: translateY(0px); }
   50% { transform: translateY(-8px); }
@@ -2322,6 +2369,46 @@ body.dark-mode .tool-tag {
   0% { transform: scale(0.6); opacity: 0; }
   70% { transform: scale(1.1); }
   100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes shineGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes badgeShimmer {
+  0% { left: -100%; }
+  30% { left: 150%; }
+  100% { left: 150%; }
+}
+
+@keyframes btnShimmer {
+  0% { left: -150%; }
+  25% { left: 150%; }
+  100% { left: 150%; }
+}
+
+/* Entrée animée progressive pour la section Hero */
+.fade-in-el {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInHero 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hero-content.fade-in-el {
+  animation-delay: 0.15s;
+}
+
+.hero-visual.fade-in-el {
+  animation-delay: 0.4s;
+}
+
+@keyframes fadeInHero {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ==========================================================================

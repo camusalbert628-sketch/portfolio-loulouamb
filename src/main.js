@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initThemeToggler();
   initCustomCursor();
+  initHeroTilt();
   initParticleCanvas();
   initMobileMenu();
   initScrollEffects();
@@ -94,6 +95,76 @@ function initCustomCursor() {
   }
   
   animateCursor();
+}
+
+/* ==========================================================================
+   HERO 3D PARALLAX TILT SYSTEM
+   ========================================================================== */
+function initHeroTilt() {
+  const wrapper = document.querySelector('.avatar-glow-wrapper');
+  if (!wrapper) return;
+
+  let mouseX = 0;
+  let mouseY = 0;
+  let currentRotateX = 0;
+  let currentRotateY = 0;
+  let isHovered = false;
+
+  const handleMouseMove = (e) => {
+    const rect = wrapper.getBoundingClientRect();
+    const wrapperCenterX = rect.left + rect.width / 2;
+    const wrapperCenterY = rect.top + rect.height / 2;
+
+    const dx = e.clientX - wrapperCenterX;
+    const dy = e.clientY - wrapperCenterY;
+
+    // Radius of influence (px)
+    const maxDistance = 600;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance < maxDistance) {
+      isHovered = true;
+      const maxTilt = 12; // Maximum tilt angle in degrees
+      
+      // Calculate target tilt values
+      // Normalize values by bounds
+      mouseX = (dx / (window.innerWidth / 2)) * maxTilt;
+      mouseY = -(dy / (window.innerHeight / 2)) * maxTilt;
+    } else {
+      isHovered = false;
+      mouseX = 0;
+      mouseY = 0;
+    }
+  };
+
+  const handleMouseLeave = () => {
+    isHovered = false;
+    mouseX = 0;
+    mouseY = 0;
+  };
+
+  window.addEventListener('mousemove', handleMouseMove);
+  document.addEventListener('mouseleave', handleMouseLeave);
+
+  function animateTilt() {
+    // Premium fluid dampening (lerp)
+    const lerpFactor = 0.08;
+    currentRotateX += (mouseY - currentRotateX) * lerpFactor;
+    currentRotateY += (mouseX - currentRotateY) * lerpFactor;
+
+    // Reset style when close to zero and not hovered
+    if (!isHovered && Math.abs(currentRotateX) < 0.01 && Math.abs(currentRotateY) < 0.01) {
+      currentRotateX = 0;
+      currentRotateY = 0;
+      wrapper.style.transform = '';
+    } else {
+      wrapper.style.transform = `rotateX(${currentRotateX}deg) rotateY(${currentRotateY}deg)`;
+    }
+
+    requestAnimationFrame(animateTilt);
+  }
+
+  animateTilt();
 }
 
 /* ==========================================================================
