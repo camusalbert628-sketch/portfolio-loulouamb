@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initTestimonialsCarousel();
   initContactForm();
   initAICopilot();
+  initToolModals();
 });
 
 /* ==========================================================================
@@ -1111,8 +1112,11 @@ function initAICopilot() {
 
   if (!wrapper || !trigger || !panel || !closeBtn || !form || !input || !chatBody) return;
 
-  // Context history and last intent state
-  let lastIntent = null;
+  // Rich conversational state memory
+  const sessionContext = {
+    history: [], // { role: 'user'|'bot', text: string }
+    lastIntent: null
+  };
 
   // Toggle Chat Panel
   trigger.addEventListener('click', (e) => {
@@ -1136,6 +1140,16 @@ function initAICopilot() {
     if (panel.classList.contains('active') && !wrapper.contains(e.target)) {
       panel.classList.remove('active');
       trigger.classList.remove('active');
+    }
+  });
+
+  // Event Delegation for reasoning toggling (collapsible)
+  chatBody.addEventListener('click', (e) => {
+    const toggleBtn = e.target.closest('.reasoning-toggle');
+    if (!toggleBtn) return;
+    const block = toggleBtn.closest('.reasoning-block');
+    if (block) {
+      block.classList.toggle('collapsed');
     }
   });
 
@@ -1171,7 +1185,7 @@ function initAICopilot() {
     messageDiv.appendChild(bubble);
     chatBody.appendChild(messageDiv);
     
-    // Refresh Lucide icons in case the HTML has icon elements
+    // Refresh Lucide icons
     if (typeof lucide !== 'undefined') {
       lucide.createIcons();
     }
@@ -1204,378 +1218,480 @@ function initAICopilot() {
     }
   }
 
-  function handleUserMessage(message) {
-    // Append user bubble
-    appendMessage(message, 'user');
-    
-    // Show typing
-    showTypingIndicator();
-
-    // Select suitable response
-    const response = getAgentResponse(message);
-
-    // Simulate thinking delay (random 800ms - 1400ms)
-    const delay = 800 + Math.random() * 600;
-    setTimeout(() => {
-      removeTypingIndicator();
-      
-      // Build visual reasoning block
-      let messageHtml = '';
-      if (response.reasoning && response.reasoning.length > 0) {
-        messageHtml += `
-          <div class="reasoning-block">
-            <div class="reasoning-header">
-              <i data-lucide="brain"></i>
-              <span>Raisonnement de l'agent...</span>
-            </div>
-            <div class="reasoning-content">
-              ${response.reasoning.join('<br>')}
-            </div>
-          </div>
-        `;
-      }
-      messageHtml += `<div class="bot-reply-text">${response.reply}</div>`;
-      
-      appendMessage(messageHtml, 'bot');
-      
-      // Execute any UI action associated with this intent
-      if (response.callback) {
-        setTimeout(response.callback, 400);
-      }
-    }, delay);
+  // Markdown → HTML renderer (bold, italic, links)
+  function renderMarkdown(text) {
+    return text
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/\((.+?)\)\[(.+?)\]/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+      .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
   }
 
-  // Context-aware NLP matching logic with Reasoning Steps
+  // Build reasoning block HTML
+  function buildReasoningBlock(steps) {
+    if (!steps || steps.length === 0) return '';
+    return `
+      <div class="reasoning-block collapsed">
+        <button class="reasoning-toggle" aria-label="Afficher/masquer le raisonnement" type="button">
+          <span class="reasoning-toggle-title">
+            <i data-lucide="brain" class="reasoning-brain-icon"></i>
+            <span>Processus de réflexion...</span>
+          </span>
+          <i data-lucide="chevron-down" class="reasoning-chevron"></i>
+        </button>
+        <div class="reasoning-content">
+          ${steps.map(step => `<div class="reasoning-step">${step}</div>`).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  // Render bot message (reasoning + reply)
+  function renderBotMessage(reply, reasoning, callback) {
+    removeTypingIndicator();
+    let html = buildReasoningBlock(reasoning);
+    html += `<div class="bot-reply-text">${renderMarkdown(reply)}</div>`;
+    appendMessage(html, 'bot');
+    sessionContext.history.push({ role: 'bot', text: reply });
+    if (callback) setTimeout(callback, 400);
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  // Trigger UI callbacks based on message query or reply
+  function triggerCallbacksBasedOnContent(userQuery, botReply) {
+    const combined = (userQuery + ' ' + botReply).toLowerCase();
+    
+    if (combined.includes("formulaire de contact") || combined.includes("me contacter") || combined.includes("contactez") || combined.includes("formulaire")) {
+      setTimeout(() => scrollToSection('contact'), 400);
+    } else if (combined.includes("projet domotique") || combined.includes("domotique connectee") || combined.includes("domotique")) {
+      setTimeout(() => triggerProjectModal('iot-domotique'), 400);
+    } else if (combined.includes("e-learning") || combined.includes("plateforme e-learning") || combined.includes("cours en ligne")) {
+      setTimeout(() => triggerProjectModal('e-learning'), 400);
+    } else if (combined.includes("saas de gestion") || combined.includes("saas de gestion d'entreprise") || combined.includes("gestion d'entreprise")) {
+      setTimeout(() => triggerProjectModal('saas-gestion'), 400);
+    } else if (combined.includes("detection d'intrusion") || combined.includes("intrusion reseau") || combined.includes("ids reseau")) {
+      setTimeout(() => triggerProjectModal('detect-intrusion'), 400);
+    } else if (combined.includes("portfolio personnel") || combined.includes("portfolio interactif")) {
+      setTimeout(() => triggerProjectModal('portfolio'), 400);
+    } else if (combined.includes("expertise en ia") || combined.includes("intelligence artificielle") || combined.includes("machine learning")) {
+      setTimeout(() => triggerSkillModal('ia'), 400);
+    } else if (combined.includes("expertise en iot") || combined.includes("systemes embarques") || combined.includes("embarque")) {
+      setTimeout(() => triggerSkillModal('iot'), 400);
+    } else if (combined.includes("automates") || combined.includes("automate programm") || combined.includes("zelio")) {
+      setTimeout(() => triggerSkillModal('api'), 400);
+    } else if (combined.includes("electricite industrielle") || combined.includes("electricite")) {
+      setTimeout(() => triggerSkillModal('electricite'), 400);
+    } else if (combined.includes("electronique") || combined.includes("pcb")) {
+      setTimeout(() => triggerSkillModal('electronique'), 400);
+    } else if (combined.includes("workflow") || combined.includes("automatisation") || combined.includes("n8n") || combined.includes("make")) {
+      setTimeout(() => triggerSkillModal('workflows'), 400);
+    } else if (combined.includes("developpement full-stack") || combined.includes("genie logiciel") || combined.includes("fullstack")) {
+      setTimeout(() => triggerSkillModal('fullstack'), 400);
+    } else if (combined.includes("projets realises") || combined.includes("ses projets") || combined.includes("realisation")) {
+      setTimeout(() => scrollToSection('projets'), 400);
+    } else if (combined.includes("competences") || combined.includes("expertises") || combined.includes("technologies")) {
+      setTimeout(() => scrollToSection('competences'), 400);
+    } else if (combined.includes("parcours") || combined.includes("experience") || combined.includes("etudes") || combined.includes("timeline")) {
+      setTimeout(() => scrollToSection('experience'), 400);
+    }
+  }
+
+  // ── Main message handler (async — tries backend API first) ─────────────────
+  async function handleUserMessage(message) {
+    appendMessage(message, 'user');
+    showTypingIndicator();
+    sessionContext.history.push({ role: 'user', text: message });
+
+    // Build history for API (last 10 messages for context window)
+    const apiHistory = sessionContext.history.slice(-10).map(h => ({
+      role: h.role,
+      text: h.text
+    }));
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: message,
+          history: apiHistory
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('API server returned error');
+      }
+
+      const data = await response.json();
+      
+      if (data.fallback) {
+        throw new Error('API requested fallback to local dictionary');
+      }
+
+      renderBotMessage(data.reply, data.reasoning);
+      triggerCallbacksBasedOnContent(message, data.reply);
+
+    } catch (error) {
+      console.warn('AI Chatbot falling back to local dictionaries:', error);
+      
+      // Run local dictionary matching
+      const localResponse = getAgentResponse(message);
+      
+      sessionContext.lastIntent = localResponse.intent;
+      updateSuggestionChips(localResponse.intent);
+
+      const delay = 600 + Math.random() * 400;
+      setTimeout(() => {
+        renderBotMessage(localResponse.reply, localResponse.reasoning, localResponse.callback);
+      }, delay);
+    }
+  }
+
+  // Dynamic Suggestion Chips based on intent state
+  function updateSuggestionChips(intent) {
+    suggestions.innerHTML = '';
+    let chips = [];
+
+    if (intent === 'api-response' || intent === 'tech-ml' || intent === 'tech-tcpip' || intent === 'tech-docker') {
+      chips = [
+        { label: '🛡️ Défends son profil', query: 'Pourquoi Christian est-il un bon candidat pour un poste senior ?' },
+        { label: '📂 Ses projets', query: 'Présente-moi ses projets réalisés.' },
+        { label: '✉️ Le contacter', query: 'Comment puis-je contacter Christian ?' }
+      ];
+    } else if (['skill-iot', 'skill-api', 'skill-electronique', 'skill-electricite', 'project-domotique'].includes(intent)) {
+      chips = [
+        { label: '🏠 Projet Domotique', query: 'Montre-moi son projet de domotique' },
+        { label: '🧠 Ses expertises en IA', query: 'Quelles sont ses compétences en Intelligence Artificielle ?' },
+        { label: '✉️ Le contacter', query: 'Prendre contact avec Christian' }
+      ];
+    } else if (['skill-ia', 'skill-fullstack', 'skill-workflows', 'project-saas', 'project-e-learning'].includes(intent)) {
+      chips = [
+        { label: '💼 SaaS de Gestion', query: 'Présente-moi son SaaS de Gestion' },
+        { label: '📚 Plateforme E-Learning', query: 'Dis-en plus sur son projet E-Learning' },
+        { label: "🎓 Son parcours d'études", query: "Quel est son parcours scolaire et académique ?" }
+      ];
+    } else if (['skill-cyber', 'project-ids'].includes(intent)) {
+      chips = [
+        { label: "🛡️ Projet Détection d'Intrusion", query: "Montre-moi son projet de détection d'intrusion" },
+        { label: '🔌 Compétences IoT', query: 'Parle-moi de ses compétences en IoT' },
+        { label: '✉️ Le contacter', query: 'Comment puis-je le contacter ?' }
+      ];
+    } else {
+      chips = [
+        { label: '💡 Compétences', query: 'Quelles sont ses compétences ?' },
+        { label: '📂 Projets', query: 'Présente-moi ses projets.' },
+        { label: '✉️ Contact', query: 'Comment le contacter ?' }
+      ];
+    }
+
+    chips.forEach(chip => {
+      const btn = document.createElement('button');
+      btn.className = 'suggestion-chip';
+      btn.setAttribute('data-question', chip.query);
+      btn.textContent = chip.label;
+      suggestions.appendChild(btn);
+    });
+  }
+
+  // Local fallback response matcher (non-greedy, with tech answers and correct details)
   function getAgentResponse(query) {
     const text = query.toLowerCase()
       .normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // strip accents
     
-    // Check if query is a positive confirmation or generic follow-up
+    // Custom French word boundary matcher
+    const hasWord = (word) => {
+      const regex = new RegExp("(^|[^a-zA-Z0-9éèàùçâêîôûëïü])" + word + "([^a-zA-Z0-9éèàùçâêîôûëïü]|$)", "i");
+      return regex.test(text);
+    };
+
+    const generateReasoning = (saisie, type, analyse, action = 'Aucune action IHM') => [
+      `• Saisie : "${saisie}"`,
+      `• Résolution : Matcher local "${type}"`,
+      `• Analyse : ${analyse}`,
+      `• Action IHM : ${action}`
+    ];
+
     const isFollowUp = text === 'oui' || text === 'ok' || text.includes('montre') || text.includes('exemple') || text.includes('voir') || text.includes('fiche') || text.includes('ouvrir') || text.includes('details') || text.includes('dis en plus') || text.includes('dis-en plus');
 
     // Contextual redirection based on history
-    if (isFollowUp && lastIntent) {
-      if (lastIntent === 'ia' || lastIntent === 'cyber') {
-        const prevContext = lastIntent;
-        lastIntent = 'detect-intrusion';
+    if (isFollowUp && sessionContext.lastIntent) {
+      if (sessionContext.lastIntent === 'skill-ia' || sessionContext.lastIntent === 'skill-cyber') {
+        sessionContext.lastIntent = 'project-ids';
         return {
-          reasoning: [
-            `• Saisie : "${query}" (Demande de précisions)`,
-            `• Contexte actif : "${prevContext}" hérité de l'échange précédent`,
-            `• Analyse logique : L'utilisateur souhaite voir un projet concret appliquant cette compétence`,
-            `• Action IHM : Ouverture du modal technique "Détection d'Intrusion Réseau"`
-          ],
+          intent: 'project-ids',
+          reasoning: generateReasoning(query, 'Suivi Contexte', "L'utilisateur veut voir un exemple pratique lié à l'IA/Cybersécurité.", "Ouverture modal IDS réseau"),
           reply: "Dans le cadre de la cybersécurité et de la programmation système, Christian a développé un **Système de Détection d'Intrusion Réseau**. Il s'agit d'un script Python (Scapy) d'écoute active couplé à une suite Elasticsearch/Kibana (ELK) pour historiser et visualiser les anomalies de flux en temps réel.<br><br>J'ouvre sa fiche technique sur votre écran à l'instant ! 🛡️",
           callback: () => triggerProjectModal('detect-intrusion')
         };
       }
-      if (lastIntent === 'iot' || lastIntent === 'api' || lastIntent === 'electricite' || lastIntent === 'electronique') {
-        const prevContext = lastIntent;
-        lastIntent = 'iot-domotique';
+      if (sessionContext.lastIntent === 'skill-iot' || sessionContext.lastIntent === 'skill-api' || sessionContext.lastIntent === 'skill-electronique' || sessionContext.lastIntent === 'skill-electricite') {
+        sessionContext.lastIntent = 'project-domotique';
         return {
-          reasoning: [
-            `• Saisie : "${query}" (Demande de précisions)`,
-            `• Contexte actif : "${prevContext}" hérité de l'échange précédent`,
-            `• Analyse logique : L'utilisateur souhaite voir un projet concret appliquant cette compétence`,
-            `• Action IHM : Ouverture du modal technique "Système IoT Domotique"`
-          ],
+          intent: 'project-domotique',
+          reasoning: generateReasoning(query, 'Suivi Contexte', "L'utilisateur veut voir un exemple pratique lié à l'IoT/Électronique.", "Ouverture modal Domotique"),
           reply: "Pour appliquer ses compétences en systèmes embarqués et automatisme, Christian a conçu un **Système IoT Domotique** complet. Il s'agit d'une architecture d'acquisition physique basée sur ESP32, utilisant le protocole MQTT pour alimenter InfluxDB, avec supervision sur Node-RED.<br><br>J'affiche sa fiche technique détaillée sur votre écran ! 🏠",
           callback: () => triggerProjectModal('iot-domotique')
         };
       }
-      if (lastIntent === 'workflows' || lastIntent === 'fullstack') {
-        const prevContext = lastIntent;
-        lastIntent = 'saas-gestion';
+      if (sessionContext.lastIntent === 'skill-workflows' || sessionContext.lastIntent === 'skill-fullstack') {
+        sessionContext.lastIntent = 'project-saas';
         return {
-          reasoning: [
-            `• Saisie : "${query}" (Demande de précisions)`,
-            `• Contexte actif : "${prevContext}" hérité de l'échange précédent`,
-            `• Analyse logique : L'utilisateur souhaite voir un projet de développement logiciel complet`,
-            `• Action IHM : Ouverture du modal technique "SaaS de Gestion"`
-          ],
+          intent: 'project-saas',
+          reasoning: generateReasoning(query, 'Suivi Contexte', "L'utilisateur veut voir un exemple pratique lié au développement logiciel/génie logiciel.", "Ouverture modal SaaS de Gestion"),
           reply: "En lien avec le génie logiciel, Christian a développé un **SaaS de Gestion d'Entreprise** professionnel. Cette application multi-locataire (multi-tenant) est programmée sous NestJS (Node.js) et s'appuie sur PostgreSQL pour coordonner les flux d'affaires et la planification d'équipes.<br><br>J'ouvre la présentation technique complète du projet ! 💼",
           callback: () => triggerProjectModal('saas-gestion')
         };
       }
     }
 
-    // 1. Direct Project Matches
-    if (text.includes('saas') || (text.includes('projet') && (text.includes('gestion') || text.includes('entreprise')))) {
-      lastIntent = 'saas-gestion';
+    // ── 🧠 BASE DE CONNAISSANCES TECHNIQUE LOCAL (Placé en priorité absolue) ──────
+    // TCP/IP
+    if (text.includes('tcp') || text.includes('ip') || text.includes('tcp/ip')) {
       return {
-        reasoning: [
-          `• Saisie : "${query}"`,
-          `• Intention : Présenter le projet SaaS de Gestion`,
-          `• Extraction de la base : NestJS, Node.js, PostgreSQL, Multi-tenancy`,
-          `• Action IHM : Lancement du modal "saas-gestion"`
-        ],
-        reply: "Le **SaaS de Gestion d'Entreprise** est une application logicielle modulaire et robuste. Conçue avec NestJS et PostgreSQL, elle offre un cadre multi-tenant ultra-sécurisé pour administrer les ressources et planifier l'activité des structures.<br><br>J'ouvre immédiatement sa fiche technique descriptive à l'écran ! 💼",
-        callback: () => triggerProjectModal('saas-gestion')
-      };
-    }
-    if (text.includes('learning') || text.includes('cours') || text.includes('enseign') || (text.includes('projet') && text.includes('etudiant'))) {
-      lastIntent = 'e-learning';
-      return {
-        reasoning: [
-          `• Saisie : "${query}"`,
-          `• Intention : Présenter la plateforme E-Learning`,
-          `• Extraction de la base : NextJS, PostgreSQL, Prisma, SSR`,
-          `• Action IHM : Lancement du modal "e-learning"`
-        ],
-        reply: "La **Plateforme E-Learning** est un projet d'enseignement en ligne dynamique bâti sous NextJS (Server Side Rendering) et structuré avec PostgreSQL et l'ORM Prisma. Elle intègre des workflows d'analyse pour le suivi administratif des progrès académiques.<br><br>J'ouvre sa fiche descriptive complète sur votre écran ! 📚",
-        callback: () => triggerProjectModal('e-learning')
-      };
-    }
-    if (text.includes('domotique') || text.includes('maison') || text.includes('connecte')) {
-      lastIntent = 'iot-domotique';
-      return {
-        reasoning: [
-          `• Saisie : "${query}"`,
-          `• Intention : Présenter le projet Domotique Connectée`,
-          `• Extraction de la base : ESP32, MQTT, InfluxDB, Node-RED, C++`,
-          `• Action IHM : Lancement du modal "iot-domotique"`
-        ],
-        reply: "Le **Système IoT Domotique** est une maquette de maison intelligente. Elle s'appuie sur des microcontrôleurs ESP32 programmés en C++ pour l'acquisition et la commande physique, communicant via MQTT avec une base de données temporelle InfluxDB et un outil de supervision Node-RED.<br><br>J'affiche sa documentation technique sur votre écran ! 🏠",
-        callback: () => triggerProjectModal('iot-domotique')
-      };
-    }
-    if (text.includes('intrusion') || text.includes('scapy') || text.includes('cybersecurite') || text.includes('securite')) {
-      lastIntent = 'detect-intrusion';
-      return {
-        reasoning: [
-          `• Saisie : "${query}"`,
-          `• Intention : Présenter le système IDS réseau`,
-          `• Extraction de la base : Python, Scapy, ELK Stack, SQLite`,
-          `• Action IHM : Lancement du modal "detect-intrusion"`
-        ],
-        reply: "Le **Système de Détection d'Intrusion Réseau (IDS)** est une solution d'écoute et d'analyse des flux réseau écrite en Python avec Scapy. Les anomalies et alertes de sécurité sont historisées dans SQLite et indexées dans Kibana (suite ELK) pour une surveillance en temps réel.<br><br>J'affiche sa fiche technique détaillée à l'écran ! 🛡️",
-        callback: () => triggerProjectModal('detect-intrusion')
-      };
-    }
-    if (text.includes('portfolio') || text.includes('vitrine') || text.includes('site')) {
-      lastIntent = 'portfolio';
-      return {
-        reasoning: [
-          `• Saisie : "${query}"`,
-          `• Intention : Présenter le projet Portfolio`,
-          `• Extraction de la base : HTML5 sémantique, CSS Glassmorphism, JS Lerping`,
-          `• Action IHM : Lancement du modal "portfolio"`
-        ],
-        reply: "Ce **Portfolio Personnel Interactif** a été développé en HTML/CSS Glassmorphism et JavaScript pour allier design cyber-futuriste immersif, fluidité des animations à 60fps et optimisation SEO complète.<br><br>J'ouvre sa présentation détaillée ! 💻",
-        callback: () => triggerProjectModal('portfolio')
+        intent: 'tech-tcpip',
+        reasoning: generateReasoning(query, 'Tech : TCP/IP', 'Explication didactique du protocole TCP/IP avec analogies.', 'Aucune'),
+        reply: "<strong>TCP/IP</strong> est la suite de protocoles de communication fondamentale qui régit le fonctionnement d'Internet.<br><br>" +
+               "📦 <strong>IP (Internet Protocol)</strong> s'occupe de l'adressage. C'est l'équivalent de l'adresse postale sur une enveloppe pour savoir où envoyer les données.<br>" +
+               "⚙️ <strong>TCP (Transmission Control Protocol)</strong> s'occupe du transport sécurisé. Il découpe les fichiers en paquets, vérifie qu'aucun paquet ne s'est perdu en route et les réassemble dans le bon ordre à l'arrivée.<br><br>" +
+               "🎯 <strong>Analogie simple :</strong> C'est comme démonter un meuble IKEA, envoyer les pièces dans 10 colis postaux séparés (IP) et avoir un livreur à destination qui vérifie que toutes les boîtes sont arrivées et remonte le meuble correctement (TCP)."
       };
     }
 
-    // 2. Skill specific triggers
-    if (text.includes('ia') || text.includes('intelligence artificielle') || text.includes('machine learning') || text.includes('tensorflow') || text.includes('python')) {
-      lastIntent = 'ia';
-      return {
-        reasoning: [
-          `• Saisie : "${query}"`,
-          `• Intention : Présenter les compétences en IA`,
-          `• Extraction de la base : Python, TensorFlow, OpenCV, Prompt Engineering`,
-          `• Action IHM : Lancement du modal d'expertise "Intelligence Artificielle"`
-        ],
-        reply: "Christian maîtrise l'**Intelligence Artificielle** appliquée à l'analyse métier et aux flux industriels. Ses compétences incluent l'utilisation de **Python, TensorFlow, OpenCV** (pour la vision par ordinateur) et le **Prompt Engineering** de grands modèles de langage.<br><br>J'ouvre sa fiche d'expertise IA détaillée à l'écran ! 🧠",
-        callback: () => triggerSkillModal('ia')
-      };
+    // Machine Learning / IA
+    if (text.includes('machine learning') || text.includes(' ml') || text.includes('ml ') || text.includes('apprentissage automatique') || text.includes('ia') || text.includes('intelligence artificielle')) {
+      // Check if it's NOT a bot identity query (avoid collision)
+      const hasBotWord = ['bot', 'assistant', 'copilot', 'tu', 'toi', 'cl_copilot', 'qui es-tu', 'qui es tu'].some(k => text.includes(k));
+      if (!hasBotWord) {
+        return {
+          intent: 'tech-ml',
+          reasoning: generateReasoning(query, 'Tech : Machine Learning', 'Explication didactique du machine learning avec exemples.', 'Aucune'),
+          reply: "Le **Machine Learning (Apprentissage Automatique)** est une branche de l'intelligence artificielle qui permet aux ordinateurs d'apprendre à partir de données sans être explicitement programmés.<br><br>" +
+                 "🎯 <strong>Analogie simple :</strong> C'est comme apprendre à un enfant à reconnaître un chien. Au lieu de lui donner des règles mathématiques complexes sur la forme des oreilles, vous lui montrez des milliers de photos de chiens. L'ordinateur fait pareil : il trouve des motifs récurrents dans les exemples qu'on lui donne.<br><br>" +
+                 "💼 <strong>Dans le portfolio de Christian :</strong> Il applique le Machine Learning pour faire de la vision par ordinateur (OpenCV) pour le contrôle qualité de pièces ou l'automatisation de pipelines IA."
+        };
+      }
     }
-    if (text.includes('iot') || text.includes('embarque') || text.includes('esp32') || text.includes('arduino') || text.includes('raspberry')) {
-      lastIntent = 'iot';
+
+    // Docker
+    if (text.includes('docker') || text.includes('conteneur')) {
       return {
-        reasoning: [
-          `• Saisie : "${query}"`,
-          `• Intention : Présenter les compétences en IoT & Embarqué`,
-          `• Extraction de la base : ESP32, C/C++, MQTT, Raspberry Pi`,
-          `• Action IHM : Lancement du modal d'expertise "IoT & Systèmes Embarqués"`
-        ],
-        reply: "En **IoT et Systèmes Embarqués**, Christian conçoit des solutions d'acquisition physiques robustes. Il programme en **C/C++** sur des cibles **ESP32 et Arduino** et assure des transmissions fiables via le protocole léger **MQTT**.<br><br>J'ouvre sa fiche d'expertise IoT complète sur l'écran ! 🔌",
-        callback: () => triggerSkillModal('iot')
-      };
-    }
-    if (text.includes('automate') || text.includes('zelio') || text.includes(' ladder') || text.includes('grafcet')) {
-      lastIntent = 'api';
-      return {
-        reasoning: [
-          `• Saisie : "${query}"`,
-          `• Intention : Présenter les compétences en API & Automates`,
-          `• Extraction de la base : Zelio Soft, Schneider, Ladder (LD), Grafcet (SFC)`,
-          `• Action IHM : Lancement du modal d'expertise "API & Automates"`
-        ],
-        reply: "Christian maîtrise le développement d'**Automates Programmables Industriels (API)**. Il programme des automates Schneider (gamme Zelio, etc.) sous **Zelio Soft et SoMachine** en utilisant les langages **Ladder, FBD et Grafcet** pour le pilotage de processus physiques réels.<br><br>J'affiche sa fiche d'expertise en automatique industrielle ! ⚙️",
-        callback: () => triggerSkillModal('api')
-      };
-    }
-    if (text.includes('electricite') || text.includes('cablage') || text.includes('armoire') || text.includes('tension')) {
-      lastIntent = 'electricite';
-      return {
-        reasoning: [
-          `• Saisie : "${query}"`,
-          `• Intention : Présenter les compétences en Électricité`,
-          `• Extraction de la base : Câblage BT/HT, Armoires de puissance, Disjoncteurs`,
-          `• Action IHM : Lancement du modal d'expertise "Électricité Industrielle"`
-        ],
-        reply: "Christian possède une solide formation pratique en **Électricité Industrielle**. Il assure la lecture de schémas électriques complexes, le câblage d'armoires de puissance et de commande BT/HT, et la configuration des organes de protection électrique (relais thermiques, disjoncteurs).<br><br>J'ouvre sa fiche de compétence électricité à l'écran ! ⚡",
-        callback: () => triggerSkillModal('electricite')
-      };
-    }
-    if (text.includes('electronique') || text.includes('pcb') || text.includes('soudure')) {
-      lastIntent = 'electronique';
-      return {
-        reasoning: [
-          `• Saisie : "${query}"`,
-          `• Intention : Présenter les compétences en Électronique`,
-          `• Extraction de la base : Conception PCB, Circuits Analogiques/Numériques, CMS`,
-          `• Action IHM : Lancement du modal d'expertise "Électronique"`
-        ],
-        reply: "Christian réalise le prototypage matériel complet de ses solutions connectées. Ses compétences englobent la conception de circuits imprimés (**PCB Design** sous Altium/EasyEDA), le diagnostic de pannes électriques et le soudage précis au composant près (soudures CMS).<br><br>J'ouvre sa fiche d'expertise électronique sur l'écran ! 📻",
-        callback: () => triggerSkillModal('electronique')
-      };
-    }
-    if (text.includes('workflow') || text.includes('automatisation') || text.includes('n8n') || text.includes('make') || text.includes('zapier')) {
-      lastIntent = 'workflows';
-      return {
-        reasoning: [
-          `• Saisie : "${query}"`,
-          `• Intention : Présenter les compétences en Automatisation`,
-          `• Extraction de la base : n8n, Make, Webhooks, APIs REST`,
-          `• Action IHM : Lancement du modal d'expertise "Automatisation & Workflows"`
-        ],
-        reply: "Pour éliminer les processus manuels et synchroniser les outils cloud, Christian développe des flux automatisés avancés en connectant des APIs web et services cloud via **n8n, Make (Integromat) et Zapier**.<br><br>J'affiche sa fiche d'expertise en automatisation ! 🔄",
-        callback: () => triggerSkillModal('workflows')
-      };
-    }
-    if (text.includes('dev') || text.includes('full') || text.includes('stack') || text.includes('web') || text.includes('react') || text.includes('next')) {
-      lastIntent = 'fullstack';
-      return {
-        reasoning: [
-          `• Saisie : "${query}"`,
-          `• Intention : Présenter les compétences en Développement Web`,
-          `• Extraction de la base : React, NextJS, Node.js, TypeScript, PostgreSQL`,
-          `• Action IHM : Lancement du modal d'expertise "Développement Full-Stack"`
-        ],
-        reply: "Christian conçoit des applications web performantes et scalables de bout en bout. Son stack moderne s'appuie sur **React et Next.js** en front-end et sur **Node.js, Express et NestJS** en back-end, avec base de données relationnelle **PostgreSQL (Prisma ORM)**.<br><br>J'ouvre sa fiche de développement full-stack ! 💻",
-        callback: () => triggerSkillModal('fullstack')
-      };
-    }
-    if (text.includes('agile') || text.includes('scrum') || text.includes('kanban') || text.includes('projet')) {
-      lastIntent = 'agile';
-      return {
-        reasoning: [
-          `• Saisie : "${query}"`,
-          `• Intention : Présenter les compétences en Gestion de Projet`,
-          `• Extraction de la base : Scrum, Kanban, Trello, Agile Roadmaps`,
-          `• Action IHM : Lancement du modal d'expertise "Gestion de projet Agile"`
-        ],
-        reply: "Christian applique les méthodologies agiles (**Scrum et Kanban**) pour planifier, découper et orchestrer les phases de développement. Il utilise des outils de suivi comme Trello et Jira pour assurer le respect des délais et la cohésion d'équipe.<br><br>J'ouvre sa fiche d'expertise projet à l'écran ! 💼",
-        callback: () => triggerSkillModal('agile')
-      };
-    }
-    if (text.includes('communication') || text.includes('closing') || text.includes('vente') || text.includes('negociation')) {
-      lastIntent = 'communication';
-      return {
-        reasoning: [
-          `• Saisie : "${query}"`,
-          `• Intention : Présenter les compétences en Communication`,
-          `• Extraction de la base : Closing, Pitch commercial, Négociation B2B`,
-          `• Action IHM : Lancement du modal d'expertise "Communication & Closing"`
-        ],
-        reply: "Christian allie rigueur scientifique et aisance relationnelle. Il est compétent pour vulgariser des projets complexes d'ingénierie devant des décideurs, piloter des présentations commerciales et négocier des contrats d'affaires B2B.<br><br>J'affiche sa fiche descriptive de compétences ! 💬",
-        callback: () => triggerSkillModal('communication')
+        intent: 'tech-docker',
+        reasoning: generateReasoning(query, 'Tech : Docker', 'Explication didactique de Docker et de la conteneurisation.', 'Aucune'),
+        reply: "<strong>Docker</strong> est une technologie de conteneurisation qui permet d'empaqueter une application et toutes ses dépendances (librairies, fichiers de configuration...) dans un conteneur isolé et léger.<br><br>" +
+               "🎯 <strong>Analogie simple :</strong> C'est le conteneur maritime standardisé. Peu importe ce qu'il y a dedans (des voitures, des bananes...) et peu importe le bateau ou le train qui le transporte, les dimensions restent les mêmes. Avec Docker, votre application s'exécute de la même manière sur l'ordinateur du développeur, sur un serveur de test ou en production sur le cloud.<br><br>" +
+               "💼 <strong>Usage de Christian :</strong> Il utilise Docker pour déployer ses environnements de développement de manière uniforme et pour conteneuriser ses applications (comme ses bases PostgreSQL ou ses APIs NestJS) pour un déploiement cloud rapide."
       };
     }
 
-    // 3. Category Sections
-    if (text.includes('competence') || text.includes('savoir') || text.includes('techno') || text.includes('peux tu faire') || text.includes('faire')) {
+    // ── 🛡️ DÉFENSE DE CHRISTIAN ────────────────────────────────────────────
+    const defenseKeywords = ['pas assez', 'trop jeune', 'manque', 'insuffisant', 'vraiment', 'doute', 'prouve', 'convainc', 'debutant', 'junior', 'tres junior', 'senior', 'pas qualifie', 'trop peu', 'pas credible', 'menteur', 'faux', 'bonne', 'bon candidat', 'embaucher', 'recruter', 'pourquoi', 'recommand'];
+    if (defenseKeywords.some(k => text.includes(k))) {
       return {
-        reasoning: [
-          `• Saisie : "${query}"`,
-          `• Intention : Redirection générale vers la section Compétences`,
-          `• Action IHM : Défilement vertical fluide vers #competences`
-        ],
-        reply: "Christian possède une expertise pluridisciplinaire en **Informatique Industrielle, IoT, IA et Cybersécurité**. Ses compétences sont divisées en expertises système et technologies logicielles.<br><br>Je viens de faire défiler l'écran vers sa section **Compétences** pour vous en donner une vision d'ensemble. Cliquez sur l'une des cartes pour en afficher le détail ! 💡",
-        callback: () => scrollToSection('competences')
+        intent: 'defense',
+        reasoning: generateReasoning(query, 'Défense du Profil', "Détection d'une question challengeante ou d'un doute sur le profil. Contre-argumentation factuelle et structurée.", 'Mode défense activé'),
+        reply: "Excellente question — permettez-moi de vous convaincre avec des <strong>faits concrets</strong>.<br><br>" +
+               "🎓 <strong>Le bagage académique d'abord :</strong> Christian a suivi une Classe Préparatoire MPSI (Mathématiques-Physique-Sciences de l'Ingénieur), le cursus le plus sélectif de France. Cela forge une rigueur analytique rare que les années seules ne peuvent pas donner.<br><br>" +
+               "💼 <strong>Les réalisations ensuite :</strong> En 3+ ans, il a livré des projets professionnels réels : un SaaS Multi-tenant (NestJS/PostgreSQL), une plateforme E-Learning (NextJS/Prisma), un Système IoT complet (ESP32/MQTT) et un IDS réseau (Python/Scapy/ELK). Ce ne sont pas des exercices scolaires — ce sont des produits fonctionnels.<br><br>" +
+               "🔬 <strong>La polyvalence enfin :</strong> Rares sont les candidats maîtrisant à la fois l'électricité industrielle BT/HT, la programmation embarquée C++, le développement fullstack et la cybersécurité. Cette double compétence matériel + logiciel est exactement ce que recherchent les industries 4.0.<br><br>" +
+               "👉 Un ingénieur se juge à ce qu'il produit, pas à son âge. Voulez-vous que j'ouvre la fiche technique d'un projet spécifique pour le démontrer ?"
       };
     }
-    if (text.includes('projet') || text.includes('realisation') || text.includes('creation') || text.includes('oeuvre')) {
+
+    // ── Identity / About the bot (non-greedy) ──────────────────────────────────
+    const isBotQuery = text.includes('qui es tu') || 
+                       text.includes('qui es-tu') || 
+                       text.includes('ton nom') || 
+                       text.includes("qu'es tu") || 
+                       ((text.includes("c'est quoi") || text.includes("qu'est-ce que")) && (text.includes('bot') || text.includes('robot') || text.includes('copilot') || text.includes('tu') || text.includes('ton') || text.includes('assistant') || text.includes('cl_copilot'))) ||
+                       hasWord('bot') || 
+                       hasWord('robot') || 
+                       hasWord('copilot') || 
+                       hasWord('cl_copilot');
+    if (isBotQuery) {
       return {
-        reasoning: [
-          `• Saisie : "${query}"`,
-          `• Intention : Redirection générale vers la section Projets`,
-          `• Action IHM : Défilement vertical fluide vers #projets`
-        ],
-        reply: "Christian a orchestré et déployé plusieurs projets de domotique, d'applications SaaS et de sécurité réseau.<br><br>Je vous montre sa section **Projets** ci-dessous. Dites-moi si vous souhaitez que j'ouvre la fiche descriptive de l'une de ces réalisations ! 📂",
-        callback: () => scrollToSection('projets')
+        intent: 'about-bot',
+        reasoning: generateReasoning(query, "Identité de l'agent", "Clarification du rôle et des capacités graphiques de l'assistant."),
+        reply: "Je suis **CL_COPILOT**, le copilote virtuel intelligent de Christian. J'ai été conçu sur mesure pour vous aider à analyser son profil d'ingénieur.<br><br>En plus de répondre à vos questions en langage naturel, je peux contrôler l'IHM du site (par exemple, faire défiler la page vers le formulaire de contact ou ouvrir la fiche technique d'un projet spécifique) ! 🤖"
       };
     }
-    if (text.includes('parcours') || text.includes('experience') || text.includes('etude') || text.includes('formation') || text.includes('ecole') || text.includes('bts') || text.includes('mpsi')) {
+
+    // Studies / Schooling / Certifications / Timeline
+    if (text.includes('parcours') || text.includes('experience') || text.includes('etude') || text.includes('formation') || text.includes('ecole') || hasWord('bts') || text.includes('mpsi') || text.includes('etudie') || text.includes('prepa') || text.includes('certification') || hasWord('cv') || text.includes('diplome') || hasWord('age') || text.includes('naissance')) {
       return {
-        reasoning: [
-          `• Saisie : "${query}"`,
-          `• Intention : Redirection générale vers la section Parcours`,
-          `• Action IHM : Défilement vertical fluide vers #experience`
-        ],
-        reply: "Christian possède un solide bagage scientifique et technique, consolidé en classe prépa MPSI (ESIAC) et lors de son BTS en automatique industrielle, complété par des certifications professionnelles (Cisco, OpenAI, Coursera).<br><br>J'ai déplacé l'écran vers sa **Timeline interactive de parcours**. N'hésitez pas à faire défiler pour observer ses jalons professionnels ! 🎓",
+        intent: 'studies',
+        reasoning: generateReasoning(query, 'Études & Parcours', 'Présentation des jalons scolaires et professionnels, avec mise en avant de la rigueur scientifique de la prépa MPSI.', 'Défilement parcours'),
+        reply: "Christian possède un profil d'ingénieur hybride alliant rigueur théorique et pragmatisme terrain :<br><br>" +
+               "1. 📚 **Classe Préparatoire MPSI (Scientifique)** à l'ESIAC : Un tronc d'études intensif en mathématiques et physique qui a forgé son esprit analytique et sa rigueur logique face à des problèmes complexes.<br>" +
+               "2. ⚙️ **BTS en Automatique Industrielle** : Une spécialisation pratique et technique (câblage BT/HT, programmation d'automates Schneider Zelio/SoMachine, électronique de puissance).<br>" +
+               "3. 🔬 **Certifications professionnelles** : Réseaux & Cybersécurité (Cisco), Intelligence Artificielle (OpenAI, Coursera) et Cloud/DevOps (Docker, GitHub Actions).<br><br>" +
+               "Je viens de faire défiler la page vers sa **Timeline interactive de parcours** pour vous laisser explorer ses détails ! 🎓",
         callback: () => scrollToSection('experience')
       };
     }
-    if (text.includes('contact') || text.includes('ecrire') || text.includes('message') || text.includes('mail') || text.includes('telephone') || text.includes('linkedin') || text.includes('facebook')) {
+
+    // Projects (General or Specific)
+    if (text.includes('projet') || text.includes('realisation') || text.includes('creation') || text.includes('oeuvre') || text.includes('portfolio') || text.includes('vitrine') || text.includes('site')) {
+      if (text.includes('saas') || text.includes('gestion') || text.includes('entreprise')) {
+        return {
+          intent: 'project-saas',
+          reasoning: generateReasoning(query, 'Projet SaaS', "Présentation du SaaS de Gestion d'entreprise.", 'Ouverture modal SaaS'),
+          reply: "Christian a conçu et développé un **SaaS de Gestion d'Entreprise** multi-locataire (multi-tenant) basé sur NestJS, PostgreSQL et Prisma. Il permet de gérer les plannings et d'isoler hermétiquement les données par entreprise.<br><br>J'ouvre sa fiche descriptive à l'écran ! 💼",
+          callback: () => triggerProjectModal('saas-gestion')
+        };
+      }
+      if (text.includes('learning') || text.includes('cours') || text.includes('etudiant') || text.includes('enseign')) {
+        return {
+          intent: 'project-elearning',
+          reasoning: generateReasoning(query, 'Projet E-Learning', 'Présentation de la plateforme E-Learning.', 'Ouverture modal E-Learning'),
+          reply: "La **Plateforme E-Learning** est une application web d'enseignement moderne bâtie sous Next.js (SSR), PostgreSQL et Prisma. Elle intègre le suivi académique et un calendrier dynamique temps réel.<br><br>J'ouvre sa fiche technique détaillée à l'écran ! 📚",
+          callback: () => triggerProjectModal('e-learning')
+        };
+      }
+      if (text.includes('domotique') || text.includes('maison') || text.includes('connecte')) {
+        return {
+          intent: 'project-domotique',
+          reasoning: generateReasoning(query, 'Projet Domotique', 'Présentation du projet de domotique IoT.', 'Ouverture modal Domotique'),
+          reply: "Le **Système IoT Domotique** est une solution complète basée sur ESP32 (C++), MQTT, InfluxDB et Node-RED pour superviser et piloter un habitat connecté à distance.<br><br>Voici sa présentation technique détaillée à l'écran ! 🏠",
+          callback: () => triggerProjectModal('iot-domotique')
+        };
+      }
+      if (text.includes('intrusion') || text.includes('securite') || text.includes('scapy') || text.includes('ids') || text.includes('reseau')) {
+        return {
+          intent: 'project-ids',
+          reasoning: generateReasoning(query, 'Projet IDS Réseau', "Présentation du projet d'IDS Cybersécurité.", 'Ouverture modal IDS'),
+          reply: "Le **Système de Détection d'Intrusion Réseau (IDS)** est un script Python (Scapy) d'écoute passive couplé à une suite Elasticsearch/Kibana (ELK) pour historiser et visualiser les anomalies de flux en temps réel.<br><br>J'affiche sa fiche technique détaillée à l'écran ! 🛡️",
+          callback: () => triggerProjectModal('detect-intrusion')
+        };
+      }
       return {
-        reasoning: [
-          `• Saisie : "${query}"`,
-          `• Intention : Redirection vers le formulaire de contact`,
-          `• Action IHM : Défilement vertical fluide vers #contact`
-        ],
-        reply: "Vous souhaitez prendre contact avec Christian ? C'est très simple :<br>- **Email** : [loulouambchristian628@gmail.com](mailto:loulouambchristian628@gmail.com)<br>- **Téléphone** : +237 6 56 31 16 02<br><br>Je viens de faire descendre la page sur son **Formulaire de contact** de Christian en bas de page pour que vous puissiez lui envoyer un message en direct ! ✉️",
+        intent: 'projects-all',
+        reasoning: generateReasoning(query, 'Projets (Général)', 'Défilement vers la section des projets.', 'Défilement projets'),
+        reply: "Christian a conçu et déployé plusieurs projets de domotique, d'applications SaaS et de sécurité réseau.<br><br>Je viens de déplacer l'écran vers sa section **Projets**. N'hésitez pas à cliquer sur l'un d'eux ou me demander d'ouvrir sa fiche technique ! 📂",
+        callback: () => scrollToSection('projets')
+      };
+    }
+
+    // Skills / Competencies (General or Specific)
+    if (text.includes('competence') || text.includes('savoir') || text.includes('techno') || text.includes('peux tu faire') || text.includes('faire') || text.includes('maitris') || text.includes('expert')) {
+      if (text.includes('ia') || text.includes('intelligence artificielle')) {
+        return {
+          intent: 'skill-ia',
+          reasoning: generateReasoning(query, 'Compétence IA', "Présentation de l'expertise IA.", 'Ouverture modal IA'),
+          reply: "Christian maîtrise l'**Intelligence Artificielle** (Python, TensorFlow, OpenCV) appliquée à l'analyse prédictive (maintenance industrielle) et aux LLMs (Prompt Engineering).<br><br>J'ouvre sa fiche d'expertise IA détaillée à l'écran ! 🧠",
+          callback: () => triggerSkillModal('ia')
+        };
+      }
+      if (text.includes('iot') || text.includes('embarque') || text.includes('esp32') || text.includes('arduino')) {
+        return {
+          intent: 'skill-iot',
+          reasoning: generateReasoning(query, 'Compétence IoT', "Présentation de l'expertise IoT.", 'Ouverture modal IoT'),
+          reply: "En **IoT & Systèmes Embarqués**, Christian conçoit des cartes d'acquisition physiques sous ESP32 programmées en C++ communiquant via MQTT.<br><br>Voici sa fiche d'expertise complète sur l'écran ! 🔌",
+          callback: () => triggerSkillModal('iot')
+        };
+      }
+      if (text.includes('automate') || text.includes('zelio') || text.includes('ladder') || text.includes('grafcet') || text.includes('schneider')) {
+        return {
+          intent: 'skill-api',
+          reasoning: generateReasoning(query, 'Compétence Automates', "Présentation de l'expertise en API.", 'Ouverture modal API'),
+          reply: "Christian maîtrise les **Automates Programmables Industriels (API)** Schneider (gamme Zelio, etc.) configurés sous Zelio Soft et SoMachine (Ladder, FBD, Grafcet).<br><br>J'affiche sa fiche d'expertise en automatique industrielle ! ⚙️",
+          callback: () => triggerSkillModal('api')
+        };
+      }
+      if (text.includes('cyber') || text.includes('securite') || text.includes('reseau')) {
+        return {
+          intent: 'skill-cyber',
+          reasoning: generateReasoning(query, 'Compétence Cybersécurité', "Présentation de l'expertise Sécurité.", 'Ouverture modal Cyber'),
+          reply: "Christian réalise des audits de réseaux et déploie des pare-feu, des VPNs sécurisés et des systèmes de détection d'intrusions (IDS) légers.<br><br>J'ouvre sa fiche d'expertise Cybersécurité sur l'écran ! 🛡️",
+          callback: () => triggerSkillModal('cyber')
+        };
+      }
+      if (text.includes('electricite') || text.includes('cablage') || text.includes('armoire') || text.includes('puissance')) {
+        return {
+          intent: 'skill-electricite',
+          reasoning: generateReasoning(query, 'Compétence Électricité', "Présentation de l'expertise Électricité.", 'Ouverture modal Électricité'),
+          reply: "Christian assure le câblage d'armoires électriques de commande/puissance BT/HT et configure les disjoncteurs et relais thermiques.<br><br>J'ouvre sa fiche de compétence électricité à l'écran ! ⚡",
+          callback: () => triggerSkillModal('electricite')
+        };
+      }
+      if (text.includes('electronique') || text.includes('pcb') || text.includes('soudure')) {
+        return {
+          intent: 'skill-electronique',
+          reasoning: generateReasoning(query, 'Compétence Électronique', "Présentation de l'expertise Électronique.", 'Ouverture modal Électronique'),
+          reply: "Christian réalise le prototypage de ses circuits imprimés (**PCB Design** sous Altium/EasyEDA) et le dépannage au composant près (soudure CMS).<br><br>J'ouvre sa fiche d'expertise électronique sur l'écran ! 📻",
+          callback: () => triggerSkillModal('electronique')
+        };
+      }
+      if (text.includes('workflow') || text.includes('automatisation') || text.includes('n8n') || text.includes('make') || text.includes('zapier')) {
+        return {
+          intent: 'skill-workflows',
+          reasoning: generateReasoning(query, 'Compétence Automatisation', "Présentation de l'expertise Automatisation.", 'Ouverture modal Workflows'),
+          reply: "Christian connecte les services cloud et automatise les flux d'informations métiers avec **n8n (self-hosted), Make et Zapier**.<br><br>J'affiche sa fiche d'expertise en automatisation ! 🔄",
+          callback: () => triggerSkillModal('workflows')
+        };
+      }
+      if (text.includes('full') || text.includes('stack') || text.includes('web') || text.includes('react') || text.includes('next') || text.includes('dev') || text.includes('logiciel')) {
+        return {
+          intent: 'skill-fullstack',
+          reasoning: generateReasoning(query, 'Compétence Web', "Présentation de l'expertise Full-stack.", 'Ouverture modal Fullstack'),
+          reply: "Christian développe des applications web dynamiques sous React/Next.js en frontend, et Node.js (NestJS, Express, PostgreSQL) en backend.<br><br>J'ouvre sa fiche de développement full-stack ! 💻",
+          callback: () => triggerSkillModal('fullstack')
+        };
+      }
+      return {
+        intent: 'skills-all',
+        reasoning: generateReasoning(query, 'Compétences (Général)', 'Défilement vers la section des compétences.', 'Défilement compétences'),
+        reply: "Christian possède une expertise en **Informatique Industrielle, IoT, IA et Cybersécurité**. Ses compétences sont divisées en expertises matérielles et développement logiciel.<br><br>Je viens de faire défiler la page vers sa section **Compétences** pour vous laisser explorer ses cartes interactives ! 💡",
+        callback: () => scrollToSection('competences')
+      };
+    }
+
+    // Contact (Correct email/phone from index.html)
+    if (text.includes('contact') || text.includes('ecrire') || text.includes('message') || text.includes('mail') || text.includes('telephone') || text.includes('linkedin') || text.includes('whatsapp') || text.includes('adresse') || text.includes('joindre')) {
+      return {
+        intent: 'contact',
+        reasoning: generateReasoning(query, 'Contact', 'Présentation des coordonnées de Christian et défilement formulaire.', 'Défilement contact'),
+        reply: "Pour échanger sur vos projets ou recruter Christian, voici ses coordonnées directes exactes :<br><br>" +
+               "✉️ **Email** : [christianoperez360@gmail.com](mailto:christianoperez360@gmail.com)<br>" +
+               "📞 **WhatsApp / Téléphone** : [+237 697 221 997](https://wa.me/237697221997)<br>" +
+               "🔗 **LinkedIn** : [Profil de Christian](https://linkedin.com/in/christian-loulouamb)<br><br>" +
+               "Je viens de faire descendre la page vers le **Formulaire de contact** en bas de page pour que vous puissiez lui écrire directement en 1 clic ! ✉️",
         callback: () => scrollToSection('contact')
       };
     }
 
-    // 4. Conversational
-    if (text.includes('bonjour') || text.includes('salut') || text.includes('hello') || text.includes('hi') || text.includes('bonsoir') || text.includes('hey') || text.includes('yo')) {
+    // Conversational: Greetings (non-greedy)
+    const isGreeting = ['bonjour', 'salut', 'hello', 'bonsoir', 'hey', 'yo', 'hi'].some(k => hasWord(k));
+    if (isGreeting) {
       return {
-        reasoning: [
-          `• Saisie : "${query}"`,
-          `• Intention : Accueil et salutations`,
-          `• Objectif : Répondre avec politesse et poser des pistes d'orientation`
-        ],
-        reply: "Bonjour ! Je suis ravi de vous accueillir sur le portfolio de Christian Loulouamb. Je suis **CL_COPILOT**, son copilote virtuel.<br><br>Comment puis-je vous accompagner aujourd'hui ? Je peux par exemple vous présenter ses expertises en **IoT / IA**, ses **projets phares**, ou vous guider pour le **contacter** ! 😊"
+        intent: 'greeting',
+        reasoning: generateReasoning(query, 'Salutations', "Accueil de l'utilisateur avec politesse et pistes d'orientation."),
+        reply: "Bonjour ! Ravi de vous accueillir sur le portfolio de Christian Loulouamb. Je suis **CL_COPILOT**, son assistant virtuel intelligent.<br><br>Comment puis-je vous accompagner aujourd'hui ? Je peux par exemple vous présenter ses expertises en **IoT / IA**, ses **projets phares**, ou vous aider à le **contacter** ! 😊"
       };
     }
-    if (text.includes('qui es tu') || text.includes('qui es-tu') || text.includes('ton nom') || text.includes("qu'es tu") || text.includes("c'est quoi") || text.includes('bot') || text.includes('robot') || text.includes('copilot')) {
+
+    // Conversational: Thanks
+    const isThanks = ['merci', 'super', 'cool', 'parfait', 'genial', 'thanks'].some(k => hasWord(k));
+    if (isThanks) {
       return {
-        reasoning: [
-          `• Saisie : "${query}"`,
-          `• Intention : Demande d'identité de l'agent`,
-          `• Objectif : Clarifier les capacités interactives de l'agent`
-        ],
-        reply: "Je suis **CL_COPILOT**, l'agent virtuel intelligent de Christian. J'ai été conçu pour agir comme un guide interactif. En plus de répondre à vos questions, je peux piloter l'IHM du site, comme faire défiler la page vers une section ou ouvrir des fiches techniques à votre place ! 🤖"
-      };
-    }
-    if (text.includes('merci') || text.includes('super') || text.includes('cool') || text.includes('parfait') || text.includes('genial')) {
-      return {
-        reasoning: [
-          `• Saisie : "${query}"`,
-          `• Intention : Remerciements de l'utilisateur`,
-          `• Objectif : Conclure poliment et rester à l'écoute`
-        ],
+        intent: 'thanks',
+        reasoning: generateReasoning(query, 'Remerciements', "Conclusion polie de l'échange."),
         reply: "Je vous en prie ! C'est un réel plaisir de vous accompagner dans la découverte de son profil. Je reste à votre entière disposition si vous souhaitez explorer un autre aspect de son travail ! 🚀"
       };
     }
 
-    // 5. Fallback Response
+    // Default Fallback
     return {
-      reasoning: [
-        `• Saisie : "${query}" (Hors dictionnaire strict)`,
-        `• Résolution : Formulation d'une réponse d'aide générale et proposition d'options`
-      ],
-      reply: "Je comprends votre intérêt. Christian est un profil polyvalent expert en **Informatique Industrielle, IoT, IA et Cybersécurité**.<br><br>N'hésitez pas à utiliser les puces d'accès rapide ci-dessus ou posez-moi des questions plus précises, comme :<br>- *'Quelles sont ses compétences en IoT ?'*<br>- *'Parle-moi du projet de détection d'intrusion'*<br>- *'Comment puis-je le contacter ?'*"
+      intent: 'fallback',
+      reasoning: generateReasoning(query, 'Hors-Dictionnaire', "Aucun mot-clé identifié. Proposition de suggestions d'orientation adaptées."),
+      reply: "Je comprends votre intérêt pour son profil.<br><br>Christian est un expert polyvalent en **IoT / Informatique Industrielle, IA et Cybersécurité**.<br><br>Vous pouvez utiliser les puces d'accès rapide ci-dessus ou me poser une question plus précise, par exemple :<br>- *'Quelles sont ses compétences en IoT ?'*<br>- *'Parle-moi de son parcours en prépa MPSI et BTS'*<br>- *'Comment puis-je le contacter ?'*"
     };
   }
 
   // UI Helper actions
   function triggerProjectModal(projectId) {
-    const card = document.querySelector(`.project-card[data-project-id="\${projectId}"]`);
+    const card = document.querySelector(`.project-card[data-project-id="${projectId}"]`);
     if (card) {
       closeActiveModals();
       setTimeout(() => card.click(), 100);
@@ -1583,7 +1699,7 @@ function initAICopilot() {
   }
 
   function triggerSkillModal(skillId) {
-    const card = document.querySelector(`.key-skill-card[data-skill-id="\${skillId}"]`);
+    const card = document.querySelector(`.key-skill-card[data-skill-id="${skillId}"]`);
     if (card) {
       closeActiveModals();
       setTimeout(() => card.click(), 100);
@@ -1594,10 +1710,12 @@ function initAICopilot() {
     const projectModal = document.getElementById('project-modal');
     const skillModal = document.getElementById('skill-modal');
     if (projectModal && projectModal.classList.contains('active')) {
-      document.getElementById('modal-close').click();
+      const closeBtn = document.getElementById('modal-close');
+      if (closeBtn) closeBtn.click();
     }
     if (skillModal && skillModal.classList.contains('active')) {
-      document.getElementById('skill-modal-close').click();
+      const closeBtn = document.getElementById('skill-modal-close');
+      if (closeBtn) closeBtn.click();
     }
   }
 
@@ -1607,4 +1725,190 @@ function initAICopilot() {
       section.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
+}
+
+/* ==========================================================================
+   TOOL DETAIL MODALS — Fiches techniques interactives par outil
+   ========================================================================== */
+function initToolModals() {
+  const overlay = document.getElementById('tool-modal-overlay');
+  const closeBtn = document.getElementById('tool-modal-close');
+  if (!overlay || !closeBtn) return;
+
+  const toolData = {
+    'git-github': {
+      emoji: '🌿',
+      name: 'Git & GitHub',
+      category: 'Versionning & Collaboration',
+      gradient: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+      tags: ['git init', 'git commit', 'git push', 'branches', 'pull request', 'merge', 'CI/CD'],
+      description: "Git est un système de contrôle de version distribué permettant d'historiser le code. GitHub héberge ces projets et facilite la collaboration en ligne.",
+      usage: "Christian configure des branches isolées pour chaque fonctionnalité, effectue des commits atomiques, et automatise les tests avec GitHub Actions.",
+      example: "Si un développeur fait une erreur qui bloque le site, Git permet de revenir immédiatement à la version stable précédente en quelques secondes.",
+      importance: "Il garantit la sécurité du code source, évite d'écraser le travail des collègues et fiabilise le travail en équipe."
+    },
+    'vercel': {
+      emoji: '▲',
+      name: 'Vercel',
+      category: 'Déploiement Cloud',
+      gradient: 'linear-gradient(135deg, #111 0%, #333 100%)',
+      tags: ['cloud', 'serverless', 'next.js', 'hosting', 'edge', 'deploy'],
+      description: "Vercel est une plateforme cloud optimisée pour héberger des applications web frontend modernes et des fonctions serverless à haute performance.",
+      usage: "Il l'utilise pour déployer ce portfolio et ses plateformes Next.js. Vercel gère le SSL automatique et prévisualise chaque branche de code.",
+      example: "Chaque fois que Christian modifie son code et le pousse sur GitHub, Vercel met à jour le site en direct en moins de 30 secondes sans aucune coupure pour les visiteurs.",
+      importance: "Permet de livrer rapidement des applications performantes, sécurisées et scalables avec un temps de chargement ultra-court grâce au réseau Edge CDN."
+    },
+    'netlify': {
+      emoji: '⚡',
+      name: 'Netlify',
+      category: 'Déploiement & Hosting',
+      gradient: 'linear-gradient(135deg, #00b0ff 0%, #00838f 100%)',
+      tags: ['jamstack', 'dns', 'hosting', 'forms', 'redirects'],
+      description: "Netlify est une plateforme d'hébergement web et de gestion de workflows pour les architectures Jamstack modernes.",
+      usage: "Utilisé pour déployer des sites statiques légers, configurer des redirections d'API et centraliser la gestion des formulaires statiques sans backend.",
+      example: "Christian déploie un site vitrine sur Netlify et y associe un formulaire de contact sans écrire une seule ligne de code backend : Netlify intercepte les soumissions automatiquement.",
+      importance: "Simplifie l'architecture des sites vitrines en éliminant le besoin de gérer des serveurs web ou des bases de données lourdes."
+    },
+    'docker': {
+      emoji: '🐳',
+      name: 'Docker',
+      category: 'Conteneurisation & DevOps',
+      gradient: 'linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%)',
+      tags: ['containers', 'docker-compose', 'images', 'isolation', 'scalability'],
+      description: "Docker encapsule une application et ses dépendances dans un conteneur virtuel isolé, garantissant son fonctionnement sur n'importe quel ordinateur.",
+      usage: "Christian conteneurise ses bases de données PostgreSQL et APIs NestJS pour s'assurer que l'environnement de développement local est identique à la production.",
+      example: "Plus de 'Mais ça marche sur ma machine !' : si l'application s'exécute dans son conteneur Docker chez Christian, elle s'exécutera exactement de la même manière sur votre serveur d'entreprise.",
+      importance: "Simplifie le déploiement, accélère l'intégration de nouveaux développeurs et évite les conflits de versions de logiciels sur les serveurs."
+    },
+    'postman': {
+      emoji: '🚀',
+      name: 'Postman',
+      category: 'API Development & Test',
+      gradient: 'linear-gradient(135deg, #ff6f00 0%, #e65100 100%)',
+      tags: ['endpoints', 'testing', 'mocking', 'documentation', 'http'],
+      description: "Postman est une plateforme collaborative permettant de concevoir, tester, documenter et simuler des API REST.",
+      usage: "Christian l'utilise pour tester ses endpoints NestJS/Express avant de les connecter au frontend, et pour rédiger la documentation technique des APIs.",
+      example: "Avant de lier le chatbot du site à l'interface visuelle, Christian teste l'envoi de questions et la réception de réponses directement dans Postman pour vérifier la sécurité et le format.",
+      importance: "Accélère le développement des applications connectées en s'assurant que le dialogue matériel/logiciel ou client/serveur est fluide et sans bug."
+    },
+    'vscode': {
+      emoji: '💻',
+      name: 'VS Code',
+      category: 'IDE / Éditeur de code',
+      gradient: 'linear-gradient(135deg, #007acc 0%, #00599c 100%)',
+      tags: ['editor', 'extensions', 'debugging', 'git integration', 'intellisense'],
+      description: "Visual Studio Code est l'éditeur de code source de référence des développeurs professionnels, léger, personnalisable et puissant.",
+      usage: "C'est l'outil de travail quotidien de Christian. Il l'a configuré avec des linters stricts (ESLint), des outils de debug et des extensions Git.",
+      example: "L'autocomplétion intelligente (IntelliSense) et la détection d'erreurs en temps réel permettent à Christian d'éviter les fautes de syntaxe pendant qu'il tape son code.",
+      importance: "Optimise le confort de travail et multiplie la vitesse de développement grâce à une intégration parfaite des outils de build et de debug."
+    },
+    'figma': {
+      emoji: '🎨',
+      name: 'Figma',
+      category: 'Design UI/UX & Prototypage',
+      gradient: 'linear-gradient(135deg, #a259ff 0%, #f24e1e 100%)',
+      tags: ['wireframe', 'design system', 'prototype', 'collaboration', 'vector'],
+      description: "Figma est un outil de conception graphique collaboratif basé sur le cloud pour créer des maquettes d'applications et de sites internet.",
+      usage: "Christian y ébauche les wireframes et les chartes graphiques de ses projets pour valider l'expérience utilisateur (UI/UX) avant le codage.",
+      example: "Christian dessine la structure de ce portfolio sur Figma sous forme d'images interactives pour s'assurer que la navigation est fluide, puis il exporte les styles CSS exacts vers son code.",
+      importance: "Évite de perdre du temps à coder des interfaces qui ne plaisent pas, en permettant de tester le rendu et l'ergonomie en amont."
+    },
+    'make': {
+      emoji: '🟣',
+      name: 'Make (Integromat)',
+      category: 'Automatisation No-Code',
+      gradient: 'linear-gradient(135deg, #8a2be2 0%, #4a0e80 100%)',
+      tags: ['scenarios', 'integrations', 'webhooks', 'routers', 'data parsing'],
+      description: "Make est un outil d'automatisation visuel qui connecte différentes applications entre elles pour créer des scénarios de transfert de données sans code.",
+      usage: "Christian configure des flux Make pour synchroniser des bases de données SaaS avec des outils de communication comme Slack ou Google Sheets.",
+      example: "Lorsqu'un prospect remplit un formulaire sur un site, Make peut instantanément créer un contact dans Airtable, envoyer une alerte sur Slack, et programmer un e-mail de bienvenue.",
+      importance: "Permet de créer des automatisations fiables et complexes en quelques minutes, éliminant les tâches administratives répétitives."
+    },
+    'zapier': {
+      emoji: '🧡',
+      name: 'Zapier',
+      category: 'Automatisation & Workflows',
+      gradient: 'linear-gradient(135deg, #ff4f00 0%, #b33700 100%)',
+      tags: ['zaps', 'triggers', 'actions', 'integrations', 'productivity'],
+      description: "Zapier est la plateforme leader de connexion d'applications web, réputée pour sa simplicité et ses milliers d'intégrations prêtes à l'emploi.",
+      usage: "Christian s'en sert pour des intégrations SaaS rapides et la mise en place de déclencheurs automatiques simples (Triggers / Actions).",
+      example: "Si un client achète une formation sur la plateforme e-learning, Zapier s'occupe de l'inscrire automatiquement sur la newsletter et de générer sa facture dans QuickBooks.",
+      importance: "Rend les systèmes logiciels agiles en créant des ponts instantanés entre des logiciels commerciaux fermés (SaaS)."
+    },
+    'n8n': {
+      emoji: '🐙',
+      name: 'n8n',
+      category: 'Workflow Automation (Self-Hosted)',
+      gradient: 'linear-gradient(135deg, #ff6b8b 0%, #e03a5c 100%)',
+      tags: ['node-based', 'self-hosted', 'javascript', 'api', 'custom code'],
+      description: "n8n est un outil d'automatisation de workflows équivalent à Make, mais open-source et hébergeable sur ses propres serveurs pour un contrôle total.",
+      usage: "Christian héberge son propre serveur n8n pour interconnecter ses modules IA physiques (IoT) et ses bases de données locales de manière sécurisée et gratuite.",
+      example: "Un capteur de température physique (ESP32) détecte une anomalie dans une armoire électrique. Il envoie un signal webhook à n8n, qui exécute un script Javascript pour formater l'alerte et l'envoyer sur le WhatsApp du technicien.",
+      importance: "Garantit la confidentialité absolue des données (pas de serveurs tiers externes) et supprime les coûts récurrents liés aux quotas d'automatisation."
+    }
+  };
+
+  const mEmoji = document.getElementById('tool-modal-emoji');
+  const mTitle = document.getElementById('tool-modal-title');
+  const mCategory = document.getElementById('tool-modal-category');
+  const mVisual = document.getElementById('tool-modal-visual');
+  const mVisualIcon = document.getElementById('tool-modal-visual-icon');
+  const mTags = document.getElementById('tool-modal-tags');
+  const mDesc = document.getElementById('tool-modal-description');
+  const mUsage = document.getElementById('tool-modal-usage');
+  const mExample = document.getElementById('tool-modal-example');
+  const mImportance = document.getElementById('tool-modal-importance');
+
+  // Open Modal Handler
+  document.querySelectorAll('.tool-tag').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const toolId = btn.getAttribute('data-tool');
+      const tool = toolData[toolId];
+      if (!tool) return;
+
+      // Populate contents
+      mEmoji.textContent = tool.emoji;
+      mTitle.textContent = tool.name;
+      mCategory.textContent = tool.category;
+      mDesc.textContent = tool.description;
+      mUsage.textContent = tool.usage;
+      mExample.textContent = tool.example;
+      mImportance.textContent = tool.importance;
+
+      // Set styles
+      mVisual.style.background = tool.gradient;
+      mVisualIcon.textContent = tool.emoji;
+
+      // Set tags
+      mTags.innerHTML = '';
+      tool.tags.forEach(tag => {
+        const tagSpan = document.createElement('span');
+        tagSpan.className = 'tool-modal-tag';
+        tagSpan.textContent = tag;
+        mTags.appendChild(tagSpan);
+      });
+
+      // Show modal
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+
+  // Close handlers
+  function closeToolModal() {
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  closeBtn.addEventListener('click', closeToolModal);
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeToolModal();
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && overlay.classList.contains('active')) {
+      closeToolModal();
+    }
+  });
 }

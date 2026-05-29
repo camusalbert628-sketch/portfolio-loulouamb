@@ -3480,13 +3480,14 @@ body.dark-mode .ai-chat-body {
 
 .chat-message.bot .message-bubble {
   background: #f1f5f9;
-  color: var(--color-white);
+  color: #1e293b;
   border-bottom-left-radius: 4px;
 }
 
 body.dark-mode .chat-message.bot .message-bubble {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.88);
 }
 
 .chat-message.user .message-bubble {
@@ -3514,7 +3515,7 @@ body.dark-mode .chat-message.bot .message-bubble {
 }
 
 body.dark-mode .typing-dot {
-  background-color: var(--color-white);
+  background-color: rgba(255, 255, 255, 0.6);
 }
 
 .typing-dot:nth-child(1) { animation-delay: -0.32s; }
@@ -3590,24 +3591,35 @@ body.dark-mode .ai-chat-input-area {
   border-radius: 20px;
   padding: 8px 16px;
   font-size: 0.88rem;
-  color: var(--color-white);
+  color: #0f172a;
   outline: none;
   transition: var(--transition-fast);
 }
 
 body.dark-mode .ai-chat-input-area input {
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.ai-chat-input-area input::placeholder {
+  color: rgba(15, 23, 42, 0.35);
+}
+
+body.dark-mode .ai-chat-input-area input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
 }
 
 .ai-chat-input-area input:focus {
   border-color: var(--color-primary);
   background: #ffffff;
+  color: #0f172a;
 }
 
 body.dark-mode .ai-chat-input-area input:focus {
   border-color: var(--color-accent);
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .ai-chat-send-btn {
@@ -3668,44 +3680,491 @@ body.dark-mode .ai-chat-input-area input:focus {
   }
 }
 
-/* AI Agent Reasoning Block */
-.reasoning-block {
-  background: rgba(109, 40, 217, 0.04);
-  border-left: 2px solid var(--color-primary);
-  padding: 8px 12px;
-  margin-bottom: 8px;
-  border-radius: 4px 12px 12px 4px;
-  font-size: 0.78rem;
-  color: var(--color-gray);
-  font-family: monospace;
+/* ============================================================
+   AI AGENT REASONING BLOCK — Collapsible Chain-of-Thought
+   ============================================================ */
+
+/* Bot reply main text */
+.bot-reply-text {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: #1e293b;
 }
 
-body.dark-mode .reasoning-block {
-  background: rgba(8, 145, 178, 0.04);
-  border-left: 2px solid var(--color-accent);
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.reasoning-header {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.bot-reply-text strong,
+.message-bubble strong {
   font-weight: 700;
-  color: var(--color-primary);
-  margin-bottom: 4px;
-  font-family: var(--font-heading);
+  color: #0f172a;
 }
 
-body.dark-mode .reasoning-header {
+.bot-reply-text a,
+.message-bubble a {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+body.dark-mode .bot-reply-text {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+body.dark-mode .bot-reply-text strong,
+body.dark-mode .message-bubble strong {
+  color: #ffffff;
+}
+
+body.dark-mode .bot-reply-text a,
+body.dark-mode .message-bubble a {
   color: var(--color-accent);
 }
 
-.reasoning-header i {
-  width: 12px;
-  height: 12px;
+/* Reasoning block container */
+.reasoning-block {
+  background: rgba(109, 40, 217, 0.04);
+  border-left: 2px solid var(--color-primary);
+  border-radius: 4px 10px 10px 4px;
+  margin-bottom: 8px;
+  font-size: 0.78rem;
+  overflow: hidden;
 }
 
+body.dark-mode .reasoning-block {
+  background: rgba(8, 145, 178, 0.06);
+  border-left: 2px solid var(--color-accent);
+}
+
+/* Toggle button */
+.reasoning-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 0.78rem;
+  color: var(--color-primary);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  gap: 8px;
+  transition: background 0.2s;
+}
+
+.reasoning-toggle:hover {
+  background: rgba(109, 40, 217, 0.06);
+}
+
+body.dark-mode .reasoning-toggle {
+  color: var(--color-accent);
+}
+
+body.dark-mode .reasoning-toggle:hover {
+  background: rgba(8, 145, 178, 0.08);
+}
+
+.reasoning-toggle-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.reasoning-brain-icon {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+.reasoning-chevron {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+/* Collapsed state */
+.reasoning-block.collapsed .reasoning-content {
+  max-height: 0;
+  padding-bottom: 0;
+  overflow: hidden;
+}
+
+.reasoning-block.collapsed .reasoning-chevron {
+  transform: rotate(0deg);
+}
+
+/* Expanded state */
+.reasoning-block:not(.collapsed) .reasoning-content {
+  max-height: 400px;
+}
+
+.reasoning-block:not(.collapsed) .reasoning-chevron {
+  transform: rotate(180deg);
+}
+
+/* Reasoning content */
 .reasoning-content {
-  line-height: 1.35;
+  padding: 0 12px 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.3s;
+  font-family: 'SF Mono', 'Fira Code', monospace;
 }
 
+/* Individual reasoning step */
+.reasoning-step {
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: rgba(109, 40, 217, 0.03);
+  color: #475569;
+  line-height: 1.45;
+  font-size: 0.76rem;
+}
+
+.reasoning-step strong {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.reasoning-step em {
+  color: var(--color-accent);
+  font-style: normal;
+  font-weight: 600;
+}
+
+body.dark-mode .reasoning-step {
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.55);
+}
+
+body.dark-mode .reasoning-step strong {
+  color: #a78bfa;
+}
+
+body.dark-mode .reasoning-step em {
+  color: #38bdf8;
+}
+
+/* ============================================================
+   TOOL DETAIL MODAL — Fiche technique par outil
+   ============================================================ */
+
+/* Overlay */
+.tool-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20000;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease, visibility 0.35s;
+}
+
+.tool-modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Panel */
+.tool-modal-panel {
+  width: 100%;
+  max-width: 860px;
+  max-height: 90vh;
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform: translateY(30px) scale(0.96);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tool-modal-overlay.active .tool-modal-panel {
+  transform: translateY(0) scale(1);
+}
+
+body.dark-mode .tool-modal-panel {
+  background: #0f172a;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+}
+
+/* Header */
+.tool-modal-header {
+  padding: 20px 24px 16px 24px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.07);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+body.dark-mode .tool-modal-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.tool-modal-close {
+  background: rgba(15, 23, 42, 0.06);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #64748b;
+  transition: background 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+
+.tool-modal-close:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+body.dark-mode .tool-modal-close {
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+body.dark-mode .tool-modal-close:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}
+
+.tool-modal-close i {
+  width: 16px;
+  height: 16px;
+}
+
+.tool-modal-badge {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.tool-modal-title {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+  flex: 1;
+}
+
+body.dark-mode .tool-modal-title {
+  color: #f8fafc;
+}
+
+.tool-modal-subtitle {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin: 0;
+  white-space: nowrap;
+  background: rgba(109, 40, 217, 0.08);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-weight: 600;
+}
+
+body.dark-mode .tool-modal-subtitle {
+  background: rgba(139, 92, 246, 0.15);
+  color: #a78bfa;
+}
+
+/* Body layout */
+.tool-modal-body {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Left visual panel */
+.tool-modal-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+  gap: 24px;
+  flex-shrink: 0;
+  min-height: 300px;
+}
+
+.tool-modal-visual-icon {
+  font-size: 4.5rem;
+  line-height: 1;
+  filter: drop-shadow(0 4px 20px rgba(0,0,0,0.3));
+  animation: floatIcon 3s ease-in-out infinite;
+}
+
+@keyframes floatIcon {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.tool-modal-tags-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+.tool-modal-tag {
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+  font-family: 'SF Mono', monospace;
+}
+
+/* Right content panel */
+.tool-modal-content {
+  padding: 24px 28px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Sections */
+.tool-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tool-section-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #6d28d9;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(109, 40, 217, 0.12);
+}
+
+body.dark-mode .tool-section-label {
+  color: #a78bfa;
+  border-bottom-color: rgba(167, 139, 250, 0.15);
+}
+
+.tool-section-icon {
+  font-size: 1rem;
+}
+
+.tool-section p {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: #334155;
+  margin: 0;
+}
+
+body.dark-mode .tool-section p {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* Example box — highlighted */
+.tool-section-example .tool-section-label {
+  color: #0891b2;
+  border-bottom-color: rgba(8, 145, 178, 0.15);
+}
+
+body.dark-mode .tool-section-example .tool-section-label {
+  color: #38bdf8;
+  border-bottom-color: rgba(56, 189, 248, 0.15);
+}
+
+.tool-example-box {
+  background: rgba(8, 145, 178, 0.04);
+  border: 1px solid rgba(8, 145, 178, 0.15);
+  border-left: 3px solid #0891b2;
+  border-radius: 4px 10px 10px 4px;
+  padding: 14px 16px;
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: #1e3a5f;
+}
+
+.tool-example-box strong {
+  color: #0891b2;
+  font-weight: 700;
+}
+
+body.dark-mode .tool-example-box {
+  background: rgba(8, 145, 178, 0.06);
+  border-color: rgba(56, 189, 248, 0.2);
+  border-left-color: #38bdf8;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+body.dark-mode .tool-example-box strong {
+  color: #38bdf8;
+}
+
+/* Make tool-tag buttons look the same as before + clickable hint */
+button.tool-tag {
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+button.tool-tag:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(109, 40, 217, 0.2);
+}
+
+body.dark-mode button.tool-tag:hover {
+  box-shadow: 0 6px 20px rgba(8, 145, 178, 0.25);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .tool-modal-body {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .tool-modal-visual {
+    min-height: 140px;
+    padding: 20px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .tool-modal-visual-icon {
+    font-size: 3rem;
+  }
+
+  .tool-modal-content {
+    padding: 16px 20px;
+  }
+
+  .tool-modal-panel {
+    max-height: 95vh;
+    border-radius: 18px;
+  }
+
+  .tool-modal-subtitle {
+    display: none;
+  }
+}

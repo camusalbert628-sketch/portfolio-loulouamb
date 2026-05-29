@@ -657,16 +657,16 @@
             </div>
             
             <div class="tools-platforms-sub" style="margin-top: 30px; text-align: center;">
-              <span class="tool-tag">Git & GitHub</span>
-              <span class="tool-tag">Vercel</span>
-              <span class="tool-tag">Netlify</span>
-              <span class="tool-tag">Docker</span>
-              <span class="tool-tag">Postman</span>
-              <span class="tool-tag">VS Code</span>
-              <span class="tool-tag">Figma</span>
-              <span class="tool-tag">Make</span>
-              <span class="tool-tag">Zapier</span>
-              <span class="tool-tag">n8n</span>
+              <button class="tool-tag" data-tool="git-github">Git & GitHub</button>
+              <button class="tool-tag" data-tool="vercel">Vercel</button>
+              <button class="tool-tag" data-tool="netlify">Netlify</button>
+              <button class="tool-tag" data-tool="docker">Docker</button>
+              <button class="tool-tag" data-tool="postman">Postman</button>
+              <button class="tool-tag" data-tool="vscode">VS Code</button>
+              <button class="tool-tag" data-tool="figma">Figma</button>
+              <button class="tool-tag" data-tool="make">Make</button>
+              <button class="tool-tag" data-tool="zapier">Zapier</button>
+              <button class="tool-tag" data-tool="n8n">n8n</button>
             </div>
           </div>
         </div>
@@ -1546,6 +1546,72 @@
     <button id="scroll-top" class="scroll-top-btn" aria-label="Retour en haut">
       <i data-lucide="arrow-up"></i>
     </button>
+
+
+    <!-- ============================================================
+         TOOL DETAIL MODAL
+         ============================================================ -->
+    <div id="tool-modal-overlay" class="tool-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="tool-modal-title">
+      <div class="tool-modal-panel">
+        <!-- Header -->
+        <div class="tool-modal-header">
+          <button id="tool-modal-close" class="tool-modal-close" aria-label="Fermer">
+            <i data-lucide="x"></i>
+          </button>
+          <div class="tool-modal-badge" id="tool-modal-emoji">🔧</div>
+          <h2 class="tool-modal-title" id="tool-modal-title">Outil</h2>
+          <p class="tool-modal-subtitle" id="tool-modal-category">Catégorie</p>
+        </div>
+
+        <!-- Body: illustration + content -->
+        <div class="tool-modal-body">
+          <!-- Left: visual panel -->
+          <div class="tool-modal-visual" id="tool-modal-visual">
+            <div class="tool-modal-visual-icon" id="tool-modal-visual-icon">💻</div>
+            <div class="tool-modal-tags-wrap" id="tool-modal-tags"></div>
+          </div>
+
+          <!-- Right: content -->
+          <div class="tool-modal-content">
+            <!-- What is it -->
+            <div class="tool-section">
+              <div class="tool-section-label">
+                <span class="tool-section-icon">📌</span>
+                <span>C'est quoi ?</span>
+              </div>
+              <p id="tool-modal-description"></p>
+            </div>
+
+            <!-- How I use it -->
+            <div class="tool-section">
+              <div class="tool-section-label">
+                <span class="tool-section-icon">💼</span>
+                <span>Comment je l'utilise</span>
+              </div>
+              <p id="tool-modal-usage"></p>
+            </div>
+
+            <!-- Recruiter example -->
+            <div class="tool-section tool-section-example">
+              <div class="tool-section-label">
+                <span class="tool-section-icon">🎯</span>
+                <span>Exemple concret pour le recruteur</span>
+              </div>
+              <div class="tool-example-box" id="tool-modal-example"></div>
+            </div>
+
+            <!-- Importance -->
+            <div class="tool-section">
+              <div class="tool-section-label">
+                <span class="tool-section-icon">⚡</span>
+                <span>Pourquoi c'est important</span>
+              </div>
+              <p id="tool-modal-importance"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Script Entry Point -->
     <script type="module" src="/src/main.js"></script>
